@@ -1,0 +1,3 @@
+group("gn_all") {
+  deps = [ "//node:node" ]
+}
