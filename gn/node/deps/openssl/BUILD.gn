@@ -728,7 +728,6 @@ openssl_defines = [
   "OPENSSLDIR=\"/etc/ssl\"",
   "ENGINESDIR=\"/dev/null\"",
   "TERMIOS",
-  "OPENSSL_RAND_SEED_NONE",
 ]
 
 component("openssl") {

@@ -18,6 +18,7 @@ cd src
 ### Build
 
 ```
+build/install-build-deps.sh
 gn gen out
 ninja -C out node
 ```
