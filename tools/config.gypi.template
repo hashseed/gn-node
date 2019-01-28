@@ -1,0 +1,19 @@
+{
+  'target_defaults': {
+    // Generated values
+    'default_configuration': {% if is_debug %}Debug{% else %}Release{% endif %},
+  },
+
+  'variables': {
+    // Generated values
+    'host_arch': '{{ host_cpu }}',
+    'node_use_v8_platform': '{{ node_use_v8_platform }}',
+    'v8_enable_i18n_support': {{ v8_enable_i18n_support }},
+    'v8_promise_internal_field_count': {{ v8_promise_internal_field_count }},
+
+    // Fixed values
+    'openssl_no_asm': 1,
+    'node_report': 'true',
+    'node_shared': 'false',
+  }
+}

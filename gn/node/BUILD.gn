@@ -1,7 +1,7 @@
 import("//v8/gni/v8.gni")
 import("node.gni")
 
-# Component build current not support.
+# Component build currently not supported.
 assert(!is_component_build)
 
 node_files = read_file("filenames.json", "json")
@@ -15,11 +15,14 @@ copy("node_js2c_inputs") {
 }
 
 action("generate_config_gypi") {
-  outputs = [
-    "$target_gen_dir/config.gypi",
-  ]
+  outputs = [ "$target_gen_dir/config.gypi", ]
+  inputs = [ "//tools/config.gypi.template" ]
   script = "//tools/generate_config_gypi.py"
-  args = rebase_path(outputs, root_build_dir)
+
+  args = rebase_path([ "//third_party" ], root_build_dir)
+  args += rebase_path([ "$root_out_dir" ], root_build_dir)
+  args += rebase_path(inputs, root_build_dir)
+  args += rebase_path(outputs, root_build_dir)
 }
 
 chdir_action("node_js2c") {

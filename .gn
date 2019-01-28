@@ -32,7 +32,7 @@ default_args = {
   v8_extra_library_files = []
   v8_postmortem_support = true
   v8_promise_internal_field_count = 1
-  v8_embedder_string = "-node.10"
+  v8_embedder_string = ""
   v8_use_snapshot = true
   v8_deprecation_warnings = false
   v8_imminent_deprecation_warnings = false
@@ -44,4 +44,3 @@ default_args = {
   v8_enable_embedded_builtins = true
   v8_enable_fast_mksnapshot = false
 }
-
