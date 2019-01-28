@@ -35,7 +35,8 @@ declare_args() {
   # default to https://nodejs.org/download/release/')
   node_release_urlbase = ""
 
-  is_aix = false
+  # Enable node_report
+  node_report = true
 }
 
 assert(!node_use_dtrace, "node_use_dtrace not supported in GN")

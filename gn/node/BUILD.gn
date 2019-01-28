@@ -210,6 +210,14 @@ component("node_lib") {
   } else {
     defines += [ "NODE_USE_V8_PLATFORM=0" ]
   }
+  if (node_report) {
+    defines += [ "NODE_REPORT" ]
+    sources += [
+      "src/node_report.cc",
+      "src/node_report_module.cc",
+      "src/node_report_utils.cc",
+    ]
+  }
 }
 
 executable("node") {

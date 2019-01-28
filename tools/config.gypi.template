@@ -10,7 +10,7 @@
     "v8_promise_internal_field_count": {{ v8_promise_internal_field_count }},
 
     "openssl_no_asm": 1,
-    "node_report": "true",
+    "node_report": "{{ node_report }}",
     "node_shared": "false"
   }
 }

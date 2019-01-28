@@ -24,21 +24,11 @@ check_targets = []
 exec_script_whitelist = build_dotfile_settings.exec_script_whitelist + []
 
 default_args = {
-  # Alternative configuration not supported.
-  is_component_build = false
-  use_sysroot = false
-  clang_use_chrome_plugins = false
-
-  # Node.js options.
-  node_use_v8_platform = true
-
-  # Node.js-specific V8 options.
-  v8_postmortem_support = true
-  v8_promise_internal_field_count = 1
-  v8_embedder_string = ""
-  v8_use_snapshot = true
-  v8_use_external_startup_data = false
-  v8_untrusted_code_mitigations = false
+  #########################################################
+  # Changeable defaults
+  # Node.js defaults.
+  node_report = true
+  is_debug = false
 
   # V8 defaults.
   v8_experimental_extra_library_files = []
@@ -53,4 +43,24 @@ default_args = {
   v8_enable_pointer_compression = false
   v8_optimized_debug = false
   v8_enable_fast_mksnapshot = false
+  
+  #########################################################
+  # Alternative configuration not supported. Do not change.
+  # General compile options.
+  is_component_build = false
+  use_sysroot = false
+  clang_use_chrome_plugins = false
+  icu_use_data_file = false
+
+  # Node.js options. Do not change.
+  node_use_v8_platform = true
+
+  # Node.js-specific V8 options. Do not change.
+  v8_postmortem_support = true
+  v8_promise_internal_field_count = 1
+  v8_embedder_string = ""
+  v8_use_snapshot = true
+  v8_use_external_startup_data = false
+  v8_untrusted_code_mitigations = false
+  v8_enable_i18n_support = true
 }
