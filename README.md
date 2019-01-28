@@ -17,8 +17,14 @@ cd src
 
 ### Build
 
-```
+```bash
 build/install-build-deps.sh
 gn gen out
 ninja -C out node
+```
+
+### Test
+
+```bash
+tools/run-tests.sh -j4
 ```

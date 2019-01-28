@@ -20,8 +20,8 @@ vars = {
   'markupsafe_url': 'https://chromium.googlesource.com/chromium/src/third_party/markupsafe.git',
   'markupsafe_revision': '8f45f5cfa0009d2a70589bcda0349b8cb2b72783',
 
-  'node_url': 'https://github.com/nodejs/node.git',
-  'node_revision': 'c9208f7ee013ffe47451487b582292300312ac1d',
+  'node_url': 'https://github.com/hashseed/node',
+  'node_branch': 'origin/canary',
 
   'trace_common_url': 'https://chromium.googlesource.com/chromium/src/base/trace_event/common.git',
   'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',
@@ -40,7 +40,7 @@ deps = {
   'src/third_party/jinja2': Var('jinja2_url') + '@' + Var('jinja2_revision'),
   'src/third_party/markupsafe': Var('markupsafe_url') + '@' + Var('markupsafe_revision'),
   'src/v8': Var('v8_url') + '@' +  Var('v8_revision'),
-  'src/node': Var('node_url') + '@' + Var('node_revision'),
+  'src/node': Var('node_url') + '@' + Var('node_branch'),
 }
 
 recursedeps = [
