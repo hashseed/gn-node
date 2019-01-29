@@ -186,16 +186,6 @@ namespace native_module {{
 {definitions}
 
 void NativeModuleLoader::LoadJavaScriptSource() {{
-  source_.emplace(
-      "original-fs/streams",
-      UnionBytes(internal_fs_streams_raw, arraysize(internal_fs_streams_raw))
-  );
- 
-  source_.emplace(
-      "original-fs",
-      UnionBytes(fs_raw, arraysize(fs_raw))
-  );
-
   {initializers}
 }}
 
@@ -222,14 +212,6 @@ source_.emplace(
     "{module}",
     UnionBytes({var}, arraysize({var}))
 );
-"""
-
-DEPRECATED_DEPS = """\
-'use strict';
-process.emitWarning(
-  'Requiring Node.js-bundled \\'{module}\\' module is deprecated. Please ' +
-  'install the necessary module locally.', 'DeprecationWarning', 'DEP0084');
-module.exports = require('internal/deps/{module}');
 """
 
 def JS2C(source, target):
@@ -275,20 +257,19 @@ def JS2C(source, target):
     lines = ExpandConstants(lines, consts)
     lines = ExpandMacros(lines, macros)
 
-    deprecated_deps = None
 
     # On Windows, "./foo.bar" in the .gyp file is passed as "foo.bar"
     # so don't assume there is always a slash in the file path.
     if '/' in name or '\\' in name:
       split = re.split('/|\\\\', name)
+      # Make scripts from v8 look like they come from node/deps/v8
+      if split[0] == '..' and split[1] == 'v8':
+        split[0] = 'deps'
       if split[0] == 'deps':
-        if split[1] == 'node-inspect' or split[1] == 'v8':
-          deprecated_deps = split[1:]
         split = ['internal'] + split
       else:
         split = split[1:]
       name = '/'.join(split)
-
     # Electron-specific: when driving the node build from Electron, we generate
     # config.gypi in a separate directory and pass the absolute path to js2c.
     # This overrides the absolute path so that the variable names in the
@@ -309,12 +290,6 @@ def JS2C(source, target):
       definitions.append(definition)
     else:
       AddModule(name.split('.', 1)[0], lines)
-
-    # Add deprecated aliases for deps without 'deps/'
-    if deprecated_deps is not None:
-      module = '/'.join(deprecated_deps).split('.', 1)[0]
-      source = DEPRECATED_DEPS.format(module=module)
-      AddModule(module, source)
 
   # Emit result
   output = open(str(target[0]), "w")
