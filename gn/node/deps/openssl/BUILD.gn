@@ -14,6 +14,7 @@ config("internal_config") {
   if (is_posix || is_fuchsia) {
     cflags_c = ["-Wno-implicit-function-declaration" ]
   }
+  cflags_cc = [ "-Wno-sign-compare" ]
   include_dirs = [
     "openssl",
     "openssl/crypto/",
@@ -748,7 +749,6 @@ component("openssl") {
 
   public_configs = [ ":external_config" ]
   configs += [ ":internal_config" ]
-
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
 }

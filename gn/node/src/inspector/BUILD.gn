@@ -2,6 +2,13 @@ import("//v8/gni/v8.gni")
 
 inspector_protocol_dir = "../../tools/inspector_protocol"
 
+config("inspector_config") {
+  include_dirs = [
+    "$target_gen_dir",
+    "$target_gen_dir/src",
+  ]
+}
+
 _protocol_generated = [
   "protocol/Forward.h",
   "protocol/Protocol.cpp",
@@ -20,15 +27,6 @@ _protocol_generated = [
 inspector_protocol_package = "src/node/inspector/protocol"
 inspector_protocol_output = "node/inspector/protocol"
 
-config("inspector_config") {
-  include_dirs = [
-    "$target_gen_dir",
-    "$target_gen_dir/src",
-  ]
-
-  defines = [ "HAVE_INSPECTOR=1" ]
-}
-
 source_set("inspector") {
   sources = [
     "main_thread_interface.cc",
@@ -45,8 +43,9 @@ source_set("inspector") {
   sources += rebase_path(_protocol_generated,
                          ".",
                          "$target_gen_dir/$inspector_protocol_package/..")
-  cflags_cc = [ "-Wno-implicit-fallthrough" ]
   include_dirs = [
+    "$target_gen_dir",
+    "$target_gen_dir/src",
     "//v8/include",
     "..",
   ]
@@ -57,18 +56,8 @@ source_set("inspector") {
     "../../deps/llhttp",
     "//third_party/icu:icuuc",
   ]
-  defines = [ "NODE_WANT_INTERNALS=1" ]
-
-  if (is_win) {
-    defines += [
-      "NOMINMAX",
-      "_UNICODE=1",
-    ]
-  } else {
-    defines += [ "__POSIX__" ]
-  }
-
   public_configs = [ ":inspector_config" ]
+  configs += [ "//node:node_lib_config" ]
 }
 
 # This based on the template from //v8/../inspector_protocol.gni
