@@ -3,8 +3,9 @@ import json
 import os
 import sys
 
+basedir = os.path.dirname(__file__)
+sys.path.append(os.path.join(basedir, os.pardir, "node", "tools"))
 import install
-
 
 def LoadPythonDictionary(path):
   file_string = open(path).read()
