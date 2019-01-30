@@ -33,6 +33,7 @@ default_args = {
   # V8 options.
   v8_embedder_string = "-node.0"
   v8_enable_embedded_builtins = true
+  v8_enable_i18n_support = true
 
   # V8 debug options
   v8_enable_disassembler = true
@@ -54,13 +55,14 @@ default_args = {
   # Node.js options. Do not change.
   node_use_v8_platform = true
 
-  # Node.js-specific V8 options.
-  v8_enable_i18n_support = true
+  # V8 options catering towards Node.js use case.
   v8_postmortem_support = true
   v8_promise_internal_field_count = 1
   v8_use_snapshot = true
   v8_use_external_startup_data = false
   v8_untrusted_code_mitigations = false
+  v8_enable_pointer_compression = false
+  v8_enable_31bit_smis_on_64bit_arch = false
 
   # V8 options.
   v8_experimental_extra_library_files = []
