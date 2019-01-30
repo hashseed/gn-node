@@ -51,6 +51,11 @@ if __name__ == '__main__':
       if f not in node_source_blacklist]
   out['node_sources'] = RedirectV8(node_sources)
 
+  cctest_target = next(
+      t for t in node_gyp['targets']
+      if t['target_name'] == 'cctest')
+  out['cctest_sources'] = cctest_target['sources']
+
   out['headers'] = []
 
   def add_headers(files, dest_dir):

@@ -61,7 +61,6 @@ default_args = {
   v8_use_snapshot = true
   v8_use_external_startup_data = false
   v8_untrusted_code_mitigations = false
-  v8_enable_i18n_support = true
 
   # V8 options.
   v8_experimental_extra_library_files = []

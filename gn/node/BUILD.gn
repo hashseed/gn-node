@@ -18,11 +18,13 @@ action("generate_config_gypi") {
   outputs = [ "$target_gen_dir/config.gypi", ]
   inputs = [ "//tools/config.gypi.template" ]
   script = "//tools/generate_config_gypi.py"
+  depfile = "$target_gen_dir/$target_name.d"
 
-  args = rebase_path([ "//third_party" ], root_build_dir)
-  args += rebase_path([ "$root_out_dir" ], root_build_dir)
-  args += rebase_path(inputs, root_build_dir)
-  args += rebase_path(outputs, root_build_dir)
+  script_args = [ "//third_party", "$root_out_dir" ]
+  script_args += inputs
+  script_args += outputs
+  script_args += [ depfile ]
+  args = rebase_path(script_args, root_build_dir)
 }
 
 chdir_action("node_js2c") {
@@ -214,4 +216,20 @@ component("node_lib") {
 executable("node") {
   sources = [ "src/node_main.cc" ]
   deps = [ ":node_lib" ]
+}
+
+executable("node_cctest") {
+  testonly = true
+  sources = node_files.cctest_sources
+  if (node_enable_inspector) {
+    sources += [
+      "test/cctest/test_inspector_socket.cc",
+      "test/cctest/test_inspector_socket_server.cc",
+    ]
+  }
+  deps = [
+    ":node_lib",
+    "//testing/gtest:gtest_main",
+  ]
+  configs += [ ":node_lib_config" ]
 }
