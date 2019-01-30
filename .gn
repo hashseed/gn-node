@@ -43,7 +43,7 @@ default_args = {
   v8_enable_pointer_compression = false
   v8_optimized_debug = false
   v8_enable_fast_mksnapshot = false
-  
+
   #########################################################
   # Alternative configuration not supported. Do not change.
   # General compile options.
@@ -56,6 +56,7 @@ default_args = {
   node_use_v8_platform = true
 
   # Node.js-specific V8 options. Do not change.
+  v8_enable_i18n_support = true
   v8_postmortem_support = true
   v8_promise_internal_field_count = 1
   v8_embedder_string = ""
