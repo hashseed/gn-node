@@ -30,15 +30,14 @@ default_args = {
   node_report = true
   is_debug = false
 
-  # V8 defaults.
-  v8_experimental_extra_library_files = []
-  v8_extra_library_files = []
+  # V8 options.
+  v8_embedder_string = "-node.0"
   v8_enable_embedded_builtins = true
-  v8_deprecation_warnings = false
-  v8_imminent_deprecation_warnings = false
 
   # V8 debug options
   v8_enable_disassembler = true
+  v8_deprecation_warnings = false
+  v8_imminent_deprecation_warnings = false
   v8_enable_handle_zapping = false
   v8_enable_pointer_compression = false
   v8_optimized_debug = false
@@ -55,13 +54,16 @@ default_args = {
   # Node.js options. Do not change.
   node_use_v8_platform = true
 
-  # Node.js-specific V8 options. Do not change.
+  # Node.js-specific V8 options.
   v8_enable_i18n_support = true
   v8_postmortem_support = true
   v8_promise_internal_field_count = 1
-  v8_embedder_string = ""
   v8_use_snapshot = true
   v8_use_external_startup_data = false
   v8_untrusted_code_mitigations = false
   v8_enable_i18n_support = true
+
+  # V8 options.
+  v8_experimental_extra_library_files = []
+  v8_extra_library_files = []
 }

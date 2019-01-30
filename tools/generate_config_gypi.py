@@ -27,7 +27,8 @@ def main(jinja_dir, gn_out_dir, template_file, output_file):
   # Fill in template.
   sys.path.append(jinja_dir)
   from jinja2 import Environment, FunctionLoader
-  env = Environment(loader=FunctionLoader(load_template))
+  env = Environment(loader=FunctionLoader(load_template),
+                    trim_blocks=True, lstrip_blocks=True)
   env.filters["to_number"] = to_number_filter
   template = env.get_template(template_file)
   rendered_template = template.render(config)
