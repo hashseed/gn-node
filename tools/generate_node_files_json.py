@@ -32,10 +32,10 @@ def RedirectV8(list):
 
 if __name__ == '__main__':
   root_dir = os.path.dirname(os.path.dirname(__file__))
-  node_root_dir = os.path.join(root_dir, 'node')
-  node_gyp_path = os.path.join(node_root_dir, 'node.gyp')
+  node_gyp_file = os.path.join(root_dir, 'node', 'node.gyp')
+  out_file = os.path.join(root_dir, 'node_files.json')
   out = {}
-  node_gyp = LoadPythonDictionary(node_gyp_path)
+  node_gyp = LoadPythonDictionary(node_gyp_file)
   library_files = RedirectV8(node_gyp['variables']['library_files'])
   out['library_files'] = library_files
   node_lib_target = next(
@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
   install.variables = {'node_shared_libuv': 'false'}
   install.headers(add_headers)
-  with open(os.path.join(node_root_dir, 'filenames.json'), 'w') as f:
+  with open(out_file, 'w') as f:
     f.write(FILENAMES_JSON_HEADER)
     f.write(json.dumps(out, sort_keys=True, indent=2, separators=(',', ': ')))
     f.write('\n')

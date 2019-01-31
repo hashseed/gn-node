@@ -4,7 +4,7 @@ import("node.gni")
 # Component build currently not supported.
 assert(!is_component_build)
 
-node_files = read_file("filenames.json", "json")
+node_files = read_file("//node_files.json", "json")
 library_files = node_files.library_files
 
 copy("node_js2c_inputs") {
@@ -15,9 +15,9 @@ copy("node_js2c_inputs") {
 }
 
 action("generate_config_gypi") {
-  outputs = [ "$target_gen_dir/config.gypi", ]
-  inputs = [ "//tools/config.gypi.template" ]
   script = "//tools/generate_config_gypi.py"
+  inputs = [ "//tools/config.gypi.template" ]
+  outputs = [ "$target_gen_dir/config.gypi", ]
   depfile = "$target_gen_dir/$target_name.d"
 
   script_args = [ "//third_party", "$root_out_dir" ]
@@ -47,9 +47,7 @@ chdir_action("node_js2c") {
   config_gypi = [ "$target_gen_dir/config.gypi" ]
 
   inputs = library_files + macro_inputs + config_gypi
-  outputs = [
-    "$target_gen_dir/node_javascript.cc",
-  ]
+  outputs = [ "$target_gen_dir/node_javascript.cc" ]
 
   cwd = "$target_gen_dir/js2c_inputs"
   script = "//tools/js2c.py"
@@ -61,7 +59,6 @@ chdir_action("node_js2c") {
 config("node_lib_config") {
   include_dirs = [ "src" ]
   cflags = [ "-Wno-microsoft-include" ]
-  defines = []
   libs = []
   cflags_cc = [
     "-Wno-deprecated-declarations",
@@ -204,6 +201,7 @@ component("node_lib") {
       "src/tls_wrap.h",
     ]
   }
+
   if (node_report) {
     sources += [
       "src/node_report.cc",
@@ -220,6 +218,11 @@ executable("node") {
 
 executable("node_cctest") {
   testonly = true
+  deps = [
+    ":node_lib",
+    "//testing/gtest:gtest_main",
+  ]
+  configs += [ ":node_lib_config" ]
   sources = node_files.cctest_sources
   if (node_enable_inspector) {
     sources += [
@@ -227,9 +230,4 @@ executable("node_cctest") {
       "test/cctest/test_inspector_socket_server.cc",
     ]
   }
-  deps = [
-    ":node_lib",
-    "//testing/gtest:gtest_main",
-  ]
-  configs += [ ":node_lib_config" ]
 }

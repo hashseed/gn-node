@@ -56,7 +56,7 @@ hooks = [
   {
     'name': 'generate_node_filelist',
     'pattern': 'src/node',
-    'action': ['python', 'src/tools/generate_gn_filenames_json.py'],
+    'action': ['python', 'src/tools/generate_node_files_json.py'],
   },
   # Pull GN using checked-in hashes.
   {

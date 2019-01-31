@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 
-root_dir = os.path.join(os.path.dirname(__file__), os.pardir)
+root_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(os.path.join(root_dir, "node", "tools"))
 import getmoduleversion
 

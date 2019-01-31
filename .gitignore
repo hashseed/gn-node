@@ -1,0 +1,15 @@
+# Dependencies
+
+/base
+/build
+/buildtools/
+/node
+/third_party
+/tools/clang
+/v8
+
+# Output folder
+/out
+
+# Generated
+/node_files.json
