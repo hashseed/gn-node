@@ -4,28 +4,11 @@
   },
 
   "variables": {
-    {#
-       Values derived from GN.
-       These values are translated from GN flags to their GYP equivalent.
-    #}
-    "host_arch": {{ host_cpu }},
-    "target_arch": {{ target_cpu }},
-    "node_use_v8_platform": "{{ node_use_v8_platform }}",
     "node_module_version": {{ node_module_version }},
     "node_report": "{{ node_report }}",
     "node_shared": {{ is_component_build | to_number }},
     {# v8_enable_inspector is a misnomer, since this is actually a node config #}
     "v8_enable_inspector": {{ node_enable_inspector | to_number }},
-    "v8_enable_i18n_support": {{ v8_enable_i18n_support | to_number }},
-    "v8_promise_internal_field_count": {{ v8_promise_internal_field_count }},
-
-    {# 
-       Fixed values.
-       These values are required by tests, but no alternative configuration
-       is currently supported.
-    #}
-    "openssl_no_asm": 1,
-    "icu_small": "false",
-    "icu_endianness": "l"
+    "v8_enable_i18n_support": {{ v8_enable_i18n_support | to_number }}
   }
 }
