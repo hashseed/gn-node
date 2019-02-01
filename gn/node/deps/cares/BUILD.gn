@@ -1,6 +1,7 @@
 config("cares_config") {
   include_dirs = [ "include" ]
 }
+
 static_library("cares") {
   defines = [ "CARES_STATICLIB" ]
   include_dirs = [

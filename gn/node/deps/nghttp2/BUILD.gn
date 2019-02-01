@@ -2,6 +2,7 @@ config("nghttp2_config") {
   defines = [ "NGHTTP2_STATICLIB" ]
   include_dirs = [ "lib/includes" ]
 }
+
 static_library("nghttp2") {
   public_configs = [ ":nghttp2_config" ]
   defines = [

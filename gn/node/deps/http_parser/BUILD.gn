@@ -7,7 +7,5 @@ static_library("http_parser") {
   include_dirs = [ "." ]
   public_configs = [ ":http_parser_config" ]
   cflags_c = [ "-Wno-string-conversion" ]
-  sources = [
-    "http_parser.c",
-  ]
+  sources = [ "http_parser.c" ]
 }

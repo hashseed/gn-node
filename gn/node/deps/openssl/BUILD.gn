@@ -1,18 +1,17 @@
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2019 the V8 project authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//v8/gni/v8.gni")
-
-# Config for us and everybody else depending on BoringSSL.
 config("external_config") {
   include_dirs = [ "openssl/include" ]
 }
 
-# Config internal to this build file, shared by boringssl and boringssl_fuzzer.
 config("internal_config") {
   if (is_posix || is_fuchsia) {
     cflags_c = ["-Wno-implicit-function-declaration" ]
+    asmflags = [ "-fPIC" ]
+    cflags = [ "-fPIC" ]
+    ldflags = [ "-fPIC" ]
   }
   cflags_cc = [ "-Wno-sign-compare" ]
   include_dirs = [
@@ -735,7 +734,6 @@ component("openssl") {
   sources = crypto_sources
   public = crypto_headers
   defines = openssl_defines
-  friend = [ ":*" ]
 
   include_dirs = [
     "openssl",
@@ -749,6 +747,7 @@ component("openssl") {
 
   public_configs = [ ":external_config" ]
   configs += [ ":internal_config" ]
-  configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs -= [ "//build/config/compiler:compiler" ]
 }

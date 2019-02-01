@@ -49,6 +49,7 @@ default_args = {
   # General compile options.
   is_component_build = false
   use_sysroot = false
+  use_custom_libcxx = false
   clang_use_chrome_plugins = false
   icu_use_data_file = false
 

@@ -34,7 +34,6 @@ def main(jinja_dir, gn_out_dir, template_file, output_file, depfile):
   rendered_template = template.render(config)
 
   # Write output.
-  print(rendered_template)
   with open(output_file, "w") as f:
     f.write(rendered_template)
 
