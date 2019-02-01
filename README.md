@@ -11,20 +11,19 @@ Node.js built with GN
 mkdir gn-node
 cd gn-node
 gclient config https://github.com/hashseed/gn-node --name=src --unmanaged
-gclient sync
 cd src
 ```
 
 ### Build
 
 ```bash
-build/install-build-deps.sh
-gn gen out
-ninja -C out node
+cd src
+make deps
+make node
 ```
 
 ### Test
 
 ```bash
-tools/run-tests.sh -j4
+JOBS=4 make test
 ```
