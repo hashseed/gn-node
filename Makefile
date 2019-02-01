@@ -18,7 +18,7 @@ out/Release:
 	gn gen $@ -q --args="is_debug = false"
 
 out/Debug:
-	gn gen $@ -q --args="is_debug = true"
+	gn gen $@ -q --args="is_debug = true v8_optimized_debug = true"
 
 # Build
 .PHONY:
