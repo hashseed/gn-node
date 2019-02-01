@@ -1,5 +1,75 @@
 import("//v8/gni/v8.gni")
-import("node.gni")
+
+declare_args() {
+  # Enable the V8 inspector protocol for use with node.
+  node_enable_inspector = true
+
+  # Build node with SSL support.
+  # The variable is called "openssl" for parity with node's GYP build.
+  node_use_openssl = true
+
+  # Use the specified path to system CA (PEM format) in addition to
+  # the BoringSSL supplied CA store or compiled-in Mozilla CA copy.
+  node_openssl_system_ca_path = ""
+
+  # Initialize v8 platform during node.js startup.
+  # NB. this must be turned off in Electron, because Electron initializes the
+  # v8 platform itself.
+  node_use_v8_platform = false
+
+  # Build with DTrace support.
+  node_use_dtrace = false
+
+  # Build with ETW support.
+  node_use_etw = false
+
+  # Build JavaScript in lib/ with DCHECK macros.
+  node_debug_lib = false
+
+  # Custom build tag.
+  node_tag = ""
+
+  # V8 options to pass, see `node --v8-options` for examples
+  node_v8_options = ""
+
+  # Provide a custom URL prefix for the `process.release` properties
+  # `sourceUrl` and `headersUrl`. When compiling a release build, this will
+  # default to https://nodejs.org/download/release/')
+  node_release_urlbase = ""
+
+  # Enable node_report
+  node_report = true
+}
+
+assert(!node_use_dtrace, "node_use_dtrace not supported in GN")
+assert(!node_use_etw, "node_use_etw not supported in GN")
+
+assert(!node_enable_inspector || node_use_openssl,
+       "node_enable_inspector requires node_use_openssl")
+
+template("chdir_action") {
+  action(target_name) {
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "script",
+                             "args",
+                           ])
+    assert(defined(cwd), "Need cwd in $target_name")
+    script = "//tools/run-in-dir.py"
+    if (defined(sources)) {
+      sources += [ invoker.script ]
+    } else {
+      assert(defined(inputs))
+      inputs += [ invoker.script ]
+    }
+    args = [
+      rebase_path(cwd),
+      rebase_path(invoker.script),
+    ]
+    args += invoker.args
+  }
+}
 
 # Component build currently not supported.
 assert(!is_component_build)
