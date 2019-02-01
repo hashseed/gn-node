@@ -8,7 +8,7 @@ endif
 
 BUILDDEPS_FLAGS = --no-nacl --no-chromeos-fonts --no-arm --lib32
 
-# Gclient sync
+# Gclient sync and check build deps
 deps:
 	gclient sync
 	build/install-build-deps.sh --quick-check $(BUILDDEPS_FLAGS) || build/install-build-deps.sh $(BUILDDEPS_FLAGS)
@@ -23,11 +23,11 @@ out/Debug:
 # Build
 .PHONY:
 build.Release: out/Release
-	ninja -C $<
+	autoninja -C $<
 
 .PHONY:
 build.Debug: out/Debug
-	ninja -C $<
+	autoninja -C $<
 
 # Link node binary
 node: build.Release

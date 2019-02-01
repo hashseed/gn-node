@@ -5,19 +5,25 @@ import("node.gni")
 assert(!is_component_build)
 
 node_files = read_file("//node_files.json", "json")
-library_files = node_files.library_files
 
 copy("node_js2c_inputs") {
-  sources = library_files
+  sources = node_files.node_library_files
   outputs = [
     "$target_gen_dir/js2c_inputs/{{source_target_relative}}",
+  ]
+}
+
+copy("node_v8_js2c_inputs") {
+  sources = node_files.v8_library_files
+  outputs = [
+    "$target_gen_dir/js2c_inputs/deps/navigation/{{source_target_relative}}",
   ]
 }
 
 action("generate_config_gypi") {
   script = "//tools/generate_config_gypi.py"
   inputs = [ "//tools/config.gypi.template" ]
-  outputs = [ "$target_gen_dir/config.gypi", ]
+  outputs = [ "$target_gen_dir/js2c_inputs/config.gypi", ]
   depfile = "$target_gen_dir/$target_name.d"
 
   script_args = [ "//third_party", "$root_out_dir" ]
@@ -31,6 +37,7 @@ chdir_action("node_js2c") {
   deps = [
     ":generate_config_gypi",
     ":node_js2c_inputs",
+    ":node_v8_js2c_inputs",
   ]
 
   macro_inputs = []
@@ -43,17 +50,19 @@ chdir_action("node_js2c") {
     macro_inputs += [ "tools/dcheck_macros.py" ]
   }
   macro_inputs += [ "tools/check_macros.py" ]
+  config_gypi = [ "$target_gen_dir/js2c_inputs/config.gypi" ]
+  # We use a relative path to work around an assertion in js2c.py.
+  config_gypi_relative_path = ["config.gypi"]
 
-  config_gypi = [ "$target_gen_dir/config.gypi" ]
-
+  library_files = node_files.all_library_files
   inputs = library_files + macro_inputs + config_gypi
   outputs = [ "$target_gen_dir/node_javascript.cc" ]
 
   cwd = "$target_gen_dir/js2c_inputs"
-  script = "//tools/js2c.py"
+  script = "tools/js2c.py"
   args = rebase_path(outputs)
   args += library_files
-  args += rebase_path(macro_inputs + config_gypi)
+  args += rebase_path(macro_inputs) + config_gypi_relative_path
 }
 
 config("node_lib_config") {

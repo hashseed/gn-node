@@ -35,9 +35,18 @@ if __name__ == '__main__':
   node_gyp_file = os.path.join(root_dir, 'node', 'node.gyp')
   out_file = os.path.join(root_dir, 'node_files.json')
   out = {}
+  # Load file list from node.gyp.
   node_gyp = LoadPythonDictionary(node_gyp_file)
-  library_files = RedirectV8(node_gyp['variables']['library_files'])
-  out['library_files'] = library_files
+
+  # Find JS lib file and single out files from V8.
+  library_files = node_gyp['variables']['library_files']
+  out['v8_library_files'] = [
+      f.replace('deps/', '../') for f in library_files if f.startswith('deps/v8')]
+  out['node_library_files'] = [
+      f for f in library_files if not f.startswith('deps/v8')]
+  out['all_library_files'] = library_files
+
+  # Find C++ source files.
   node_lib_target = next(
       t for t in node_gyp['targets']
       if t['target_name'] == '<(node_lib_target_name)')
@@ -49,8 +58,10 @@ if __name__ == '__main__':
   node_sources = [
       f for f in node_lib_target['sources']
       if f not in node_source_blacklist]
-  out['node_sources'] = RedirectV8(node_sources)
+  out['node_sources'] = [
+      f.replace('deps/v8/', '../v8/', 1) for f in node_sources]
 
+  # Find cctest files.
   cctest_target = next(
       t for t in node_gyp['targets']
       if t['target_name'] == 'cctest')
@@ -58,6 +69,7 @@ if __name__ == '__main__':
 
   out['headers'] = []
 
+  # Collect headers.
   def add_headers(files, dest_dir):
     if 'src/node.h' in files:
       files = [f for f in files if f.endswith('.h')]
@@ -67,6 +79,8 @@ if __name__ == '__main__':
 
   install.variables = {'node_shared_libuv': 'false'}
   install.headers(add_headers)
+
+  # Write file list as JSON.
   with open(out_file, 'w') as f:
     f.write(FILENAMES_JSON_HEADER)
     f.write(json.dumps(out, sort_keys=True, indent=2, separators=(',', ': ')))
