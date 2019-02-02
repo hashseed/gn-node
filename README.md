@@ -1,9 +1,9 @@
 # Node.js built with GN
 
 ## Background
-V8 was originally built with SCons. Following Chromium, it made the switch to GYP, completing in around 2012. That was when Node.js started its success story. However, again following Chromium, V8 made the switch to GN, completing in 2016. So far, Node.js has hesitated in adopting GN. One of the reasons is its now established native modules ecosystem that relies on GYP for build configuration.
+V8 was originally built with SCons. Following Chromium, it made the switch to GYP, completing around 2012. That was when Node.js started its success story. However, again following Chromium, V8 made the switch to GN, completing in 2016. So far, Node.js has hesitated in adopting GN. One of the reasons is its now established native modules ecosystem that relies on GYP for build configuration.
 
-Electron, having both Chromium and Node.js as its dependencies, adopted GN. Many files in this repository have been derived from the [Electron project](https://github.com/electron/node), with appropriate changes to avoid the need for forking files, to implement a standalone build, or fix test failures.
+Electron, having both Chromium and Node.js as its dependencies, adopted GN. Many files in this repository have been derived from the [Electron project](https://github.com/electron/node), with appropriate changes to avoid the need for forking files, to implement a standalone build, or to fix test failures.
 
 Some reading material:
 * [GN build system](https://www.chromium.org/developers/gn-build-configuration)
@@ -48,9 +48,9 @@ JOBS=4 make test
 ## Not yet implemented
 * Support building on Mac and Windows. The current configurations have only been tested for Linux.
 * Platform-specific OpenSSL build configurations. The current build only supports the slowest platform-independent configuration.
-* Code caching support
+* Code caching support.
 * Enable shared library build.
-* Optionally: support for BoringSSL
+* Optionally: support for BoringSSL.
 * Support building native modules as part of testing.
 
 ## Explicit non-goals
