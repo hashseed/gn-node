@@ -7,6 +7,9 @@
     "node_module_version": {{ node_module_version }},
     "node_report": "{{ node_report }}",
     "node_shared": {{ is_component_build | to_number }},
+    {% if node_use_code_cache %}
+    "node_code_cache_path": "node_code_cache.cc",
+    {% endif %}
     {# v8_enable_inspector is a misnomer, since this is actually a node config #}
     "v8_enable_inspector": {{ node_enable_inspector | to_number }},
     "v8_enable_i18n_support": {{ v8_enable_i18n_support | to_number }}

@@ -341,6 +341,7 @@ executable("node_cctest") {
   ]
   configs += [ ":node_lib_config" ]
   sources = node_files.cctest_sources
+  sources += [ "src/node_code_cache_stub.cc" ]
   if (node_enable_inspector) {
     sources += [
       "test/cctest/test_inspector_socket.cc",

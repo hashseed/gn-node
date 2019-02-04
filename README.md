@@ -48,7 +48,6 @@ JOBS=4 make test
 ## Not yet implemented
 * Support building on Mac and Windows. The current configurations have only been tested for Linux.
 * Platform-specific OpenSSL build configurations. The current build only supports the slowest platform-independent configuration.
-* Code caching support.
 * Enable shared library build.
 * Optionally: support for BoringSSL.
 * Support building native modules as part of testing.
