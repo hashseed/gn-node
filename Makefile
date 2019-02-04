@@ -60,3 +60,8 @@ test: cctest.Release jstest.Release
 
 .PHONY:
 test_g: cctest.Debug jstest.Debug 
+
+# Clean
+.PHONY:
+clean:
+	rm -rf out
