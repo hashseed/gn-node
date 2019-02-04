@@ -4,6 +4,7 @@
   },
 
   "variables": {
+    {# necessary for running js tests #}
     "node_module_version": {{ node_module_version }},
     "node_report": "{{ node_report }}",
     "node_shared": {{ is_component_build | to_number }},
@@ -12,6 +13,12 @@
     {% endif %}
     {# v8_enable_inspector is a misnomer, since this is actually a node config #}
     "v8_enable_inspector": {{ node_enable_inspector | to_number }},
-    "v8_enable_i18n_support": {{ v8_enable_i18n_support | to_number }}
+    "v8_enable_i18n_support": {{ v8_enable_i18n_support | to_number }},
+
+    {# introduced for building addons #}
+    "node_use_openssl": "{{ node_use_openssl }}
+    "build_v8_with_gn": "false",
+    "enable_lto": "false",
+    "openssl_fips": "",
   }
 }
