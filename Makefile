@@ -23,11 +23,11 @@ out/Debug:
 # Build
 .PHONY:
 build.Release: out/Release
-	autoninja -C $<
+	gn gen $< && autoninja -C $<
 
 .PHONY:
 build.Debug: out/Debug
-	autoninja -C $<
+	gn gen $< && autoninja -C $<
 
 # Link node binary
 node: build.Release
