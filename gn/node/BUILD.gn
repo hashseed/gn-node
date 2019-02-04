@@ -29,16 +29,19 @@ declare_args() {
   # Custom build tag.
   node_tag = ""
 
-  # V8 options to pass, see `node --v8-options` for examples
+  # V8 options to pass, see `node --v8-options` for examples.
   node_v8_options = ""
 
   # Provide a custom URL prefix for the `process.release` properties
   # `sourceUrl` and `headersUrl`. When compiling a release build, this will
-  # default to https://nodejs.org/download/release/')
+  # default to https://nodejs.org/download/release/').
   node_release_urlbase = ""
 
-  # Enable node_report
+  # Enable node_report.
   node_report = true
+
+  # Use code cache to speed up startup.
+  node_use_code_cache = true
 }
 
 assert(!node_use_dtrace, "node_use_dtrace not supported in GN")
@@ -235,7 +238,7 @@ component("node_lib") {
     "deps/uv",
     "//v8",
   ]
-  configs += [ ":node_lib_config" ]
+  public_configs = [ ":node_lib_config" ]
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
   configs -= [ "//build/config/clang:find_bad_constructs" ]
@@ -243,7 +246,6 @@ component("node_lib") {
   sources = node_files.node_sources
   sources += [
     "$target_gen_dir/node_javascript.cc",
-    "src/node_code_cache_stub.cc",
   ]
 
   if (v8_enable_i18n_support) {
@@ -290,9 +292,45 @@ component("node_lib") {
   }
 }
 
-executable("node") {
-  sources = [ "src/node_main.cc" ]
-  deps = [ ":node_lib" ]
+if (node_use_code_cache) {
+  executable("node_no_cache") {
+    sources = [
+      "src/node_main.cc",
+      "src/node_code_cache_stub.cc",
+    ]
+    deps = [ ":node_lib" ]
+  }
+
+  action("generate_code_cache") {
+    script = "//tools/generate_code_cache.py"
+    inputs = [ "tools/generate_code_cache.js" ]
+    outputs = [ "$target_gen_dir/node_code_cache.cc" ]
+    node_exe = [
+      get_label_info(":node_no_cache", "root_out_dir") + "/node_no_cache"
+    ]
+
+    args = rebase_path(node_exe + inputs + outputs, root_build_dir)
+    deps = [":node_no_cache"]
+  }
+
+  executable("node") {
+    sources = [
+      "src/node_main.cc",
+      "$target_gen_dir/node_code_cache.cc",
+    ]
+    deps = [
+      ":node_lib",
+      ":generate_code_cache",
+    ]
+  }
+} else {
+  executable("node") {
+    sources = [
+      "src/node_main.cc",
+      "src/node_code_cache_stub.cc",
+    ]
+    deps = [ ":node_lib" ]
+  }
 }
 
 executable("node_cctest") {
