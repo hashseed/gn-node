@@ -56,7 +56,7 @@ jstest.Debug: build.Debug
 
 # Run all tests
 .PHONY: test
-test: cctest.Release jstest.Release build-addons
+test: cctest.Release jstest.Release
 
 .PHONY: test_g
 test_g: cctest.Debug jstest.Debug
@@ -66,9 +66,27 @@ test_g: cctest.Debug jstest.Debug
 clean:
 	rm -rf out
 
+# Build tests.
 RELEASE_NODE = $(abspath out/Release/node)
 NPM_CLI = $(abspath node/deps/npm/bin/npm-cli.js)
+NODE_DIR := $(CURDIR)/node
 
+define run_build_addons
+env npm_config_loglevel="silent" npm_config_nodedir="$(NODE_DIR)" \
+  npm_config_python="python" npm_config_tarball="out/Release/gen/node_headers.tar.gz" \
+	$(RELEASE_NODE) "$(NODE_DIR)/tools/build-addons" \
+  "$(NODE_DIR)/deps/npm/node_modules/node-gyp/bin/node-gyp.js" \
+  $1
+touch $2
+endef
+
+ADDONS_PREREQS := build.Release \
+	node/deps/npm/node_modules/node-gyp/package.json node/tools/build-addons.js \
+	node/deps/uv/include/*.h v8/include/*.h \
+	node/src/node.h node/src/node_buffer.h node/src/node_object_wrap.h \
+        node/src/node_version.h
+
+# Addons binding
 ADDONS_BINDING_GYPS := \
 	$(filter-out node/test/addons/??_*/binding.gyp, \
 		$(wildcard node/test/addons/*/binding.gyp))
@@ -77,37 +95,22 @@ ADDONS_BINDING_SOURCES := \
 	$(filter-out node/test/addons/??_*/*.cc, $(wildcard node/test/addons/*/*.cc)) \
 	$(filter-out node/test/addons/??_*/*.h, $(wildcard node/test/addons/*/*.h))
 
-ADDONS_PREREQS := out/Release/gen/node/js2c_inputs/config.gypi \
-	node/deps/npm/node_modules/node-gyp/package.json node/tools/build-addons.js \
-	node/deps/uv/include/*.h v8/include/*.h \
-	node/src/node.h node/src/node_buffer.h node/src/node_object_wrap.h \
-        node/src/node_version.h
-
-NODE_DIR := $(CURDIR)/node
-
-define run_build_addons
-env npm_config_loglevel="silent" npm_config_nodedir="$(NODE_DIR)" \
-  npm_config_python="python" $(RELEASE_NODE) "$(NODE_DIR)/tools/build-addons" \
-  "$(NODE_DIR)/deps/npm/node_modules/node-gyp/bin/node-gyp.js" \
-  $1
-touch $2
-endef
-
-node/tools/doc/node_modules: node/tools/doc/package.json $(RELEASE_NODE)
+node/tools/doc/node_modules: node/tools/doc/package.json build.Release
 	cd node/tools/doc && $(RELEASE_NODE) $(NPM_CLI) ci
 
 out/Release/.docbuildstamp: node/tools/doc/addon-verify.js \
 	node/doc/api/addons.md node/tools/doc/node_modules \
-	$(RELEASE_NODE)
+	build.Release
 	rm -r node/test/addons/??_*/; \
 	$(RELEASE_NODE) $< \
 	touch $@;
 
 out/Release/.addonsbuildstamp: $(ADDONS_PREREQS) \
 	$(ADDONS_BINDING_GYPS) $(ADDONS_BINDING_SOURCES) \
-	out/Release/.docbuildstamp
+	out/Release/.docbuildstamp out/Release/gen/node_headers.tar.gz build.Release
 	@$(call run_build_addons, "$(NODE_DIR)/test/addons",$@)
 	touch $@
 
-.PHONY: build-addons
-build-addons: out/Release/.addonsbuildstamp
+.PHONY: test-addons
+test-addons: out/Release/.addonsbuildstamp
+	tools/test.py $(PARALLEL_ARGS) -m release addons
