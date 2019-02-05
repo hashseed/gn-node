@@ -126,7 +126,9 @@ chdir_action("node_js2c") {
   config_gypi_relative_path = ["config.gypi"]
 
   library_files = node_files.all_library_files
-  inputs = library_files + macro_inputs + config_gypi
+  inputs = get_target_outputs(":node_js2c_inputs") +
+           get_target_outputs(":node_v8_js2c_inputs") +
+           macro_inputs + config_gypi
   outputs = [ "$target_gen_dir/node_javascript.cc" ]
 
   cwd = "$target_gen_dir/js2c_inputs"
