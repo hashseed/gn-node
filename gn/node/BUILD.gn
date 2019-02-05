@@ -95,12 +95,10 @@ copy("node_v8_js2c_inputs") {
 
 action("generate_config_gypi") {
   script = "//tools/generate_config_gypi.py"
-  inputs = [ "//tools/config.gypi.template" ]
   outputs = [ "$target_gen_dir/js2c_inputs/config.gypi", ]
   depfile = "$target_gen_dir/$target_name.d"
 
   script_args = [ "//third_party", "$root_out_dir" ]
-  script_args += inputs
   script_args += outputs
   script_args += [ depfile ]
   args = rebase_path(script_args, root_build_dir)
