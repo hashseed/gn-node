@@ -20,8 +20,8 @@ vars = {
   'markupsafe_url': 'https://chromium.googlesource.com/chromium/src/third_party/markupsafe.git',
   'markupsafe_revision': '8f45f5cfa0009d2a70589bcda0349b8cb2b72783',
 
-  'node_url': 'https://github.com/hashseed/node',
-  'node_branch': 'origin/canary',
+  'node_url': 'https://chromium.googlesource.com/external/github.com/v8/node.git',
+  'node_branch': 'origin/node-ci',
 
   'trace_common_url': 'https://chromium.googlesource.com/chromium/src/base/trace_event/common.git',
   'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',
