@@ -85,6 +85,14 @@ ADDONS_PREREQS := out/Release/gen/node/js2c_inputs/config.gypi \
 
 NODE_DIR := $(CURDIR)/node
 
+define run_build_addons
+env npm_config_loglevel="silent" npm_config_nodedir="$(NODE_DIR)" \
+  npm_config_python="python" $(RELEASE_NODE) "$(NODE_DIR)/tools/build-addons" \
+  "$(NODE_DIR)/deps/npm/node_modules/node-gyp/bin/node-gyp.js" \
+  $1
+touch $2
+endef
+
 node/tools/doc/node_modules: node/tools/doc/package.json $(RELEASE_NODE)
 	cd node/tools/doc && $(RELEASE_NODE) $(NPM_CLI) ci
 
@@ -98,10 +106,7 @@ out/Release/.docbuildstamp: node/tools/doc/addon-verify.js \
 out/Release/.addonsbuildstamp: $(ADDONS_PREREQS) \
 	$(ADDONS_BINDING_GYPS) $(ADDONS_BINDING_SOURCES) \
 	out/Release/.docbuildstamp
-	env npm_config_loglevel=silent npm_config_nodedir="$(NODE_DIR)" \
-	npm_config_python="python" $(RELEASE_NODE) $(NODE_DIR)/tools/build-addons \
-  	$(NODE_DIR)/deps/npm/node_modules/node-gyp/bin/node-gyp.js \
-  	$(NODE_DIR)/test/addons; \
+	@$(call run_build_addons, "$(NODE_DIR)/test/addons",$@)
 	touch $@
 
 .PHONY: build-addons

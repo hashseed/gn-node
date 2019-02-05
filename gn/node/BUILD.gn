@@ -136,8 +136,14 @@ chdir_action("node_js2c") {
   args += rebase_path(macro_inputs) + config_gypi_relative_path
 }
 
-config("node_lib_config") {
+config("node_lib_external") {
   include_dirs = [ "src" ]
+  defines = [ "NODE_WANT_INTERNALS=1" ]
+}
+
+config("node_lib_internal") {
+  visibility = [ ":*", "src/inspector:*" ]
+  configs = [ ":node_lib_external" ]
   cflags = [ "-Wno-microsoft-include" ]
   libs = []
   cflags_cc = [
@@ -151,18 +157,12 @@ config("node_lib_config") {
     "-Wno-string-plus-int",
     "-Wno-string-conversion",
   ]
-  defines = [
-    "NODE_WANT_INTERNALS=1",
-    "NODE_IMPLEMENTATION",
-  ]
 
   if (target_cpu == "x86") {
     node_arch = "ia32"
   } else {
     node_arch = target_cpu
   }
-  defines += [ "NODE_ARCH=\"$node_arch\"" ]
-
   if (target_os == "win") {
     node_platform = "win32"
   } else if (target_os == "mac") {
@@ -170,7 +170,10 @@ config("node_lib_config") {
   } else {
     node_platform = target_os
   }
-  defines += [ "NODE_PLATFORM=\"$node_platform\"" ]
+  defines = [
+    "NODE_ARCH=\"$node_arch\"",
+    "NODE_PLATFORM=\"$node_platform\"",
+  ]
 
   if (is_win) {
     defines += [
@@ -236,7 +239,8 @@ component("node_lib") {
     "deps/uv",
     "//v8",
   ]
-  public_configs = [ ":node_lib_config" ]
+  public_configs = [ ":node_lib_external" ]
+  configs += [ ":node_lib_internal" ]
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
   configs -= [ "//build/config/clang:find_bad_constructs" ]
@@ -337,7 +341,7 @@ executable("node_cctest") {
     ":node_lib",
     "//testing/gtest:gtest_main",
   ]
-  configs += [ ":node_lib_config" ]
+  configs += [ ":node_lib_internal" ]
   sources = node_files.cctest_sources
   sources += [ "src/node_code_cache_stub.cc" ]
   if (node_enable_inspector) {
