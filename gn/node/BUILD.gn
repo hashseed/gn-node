@@ -1,0 +1,358 @@
+# Copyright (c) 2013-2019 GitHub Inc.
+# Copyright 2019 the V8 project authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//v8/gni/v8.gni")
+
+declare_args() {
+  # Enable the V8 inspector protocol for use with node.
+  node_enable_inspector = true
+
+  # Build node with SSL support.
+  # The variable is called "openssl" for parity with node's GYP build.
+  node_use_openssl = true
+
+  # Use the specified path to system CA (PEM format) in addition to
+  # the BoringSSL supplied CA store or compiled-in Mozilla CA copy.
+  node_openssl_system_ca_path = ""
+
+  # Initialize v8 platform during node.js startup.
+  node_use_v8_platform = true
+
+  # Build with DTrace support.
+  node_use_dtrace = false
+
+  # Build with ETW support.
+  node_use_etw = false
+
+  # Build JavaScript in lib/ with DCHECK macros.
+  node_debug_lib = false
+
+  # Custom build tag.
+  node_tag = ""
+
+  # V8 options to pass, see `node --v8-options` for examples.
+  node_v8_options = ""
+
+  # Provide a custom URL prefix for the `process.release` properties
+  # `sourceUrl` and `headersUrl`. When compiling a release build, this will
+  # default to https://nodejs.org/download/release/').
+  node_release_urlbase = ""
+
+  # Enable node_report.
+  node_report = true
+
+  # Use code cache to speed up startup.
+  node_use_code_cache = true
+}
+
+assert(!node_use_dtrace, "node_use_dtrace not supported in GN")
+assert(!node_use_etw, "node_use_etw not supported in GN")
+
+assert(!node_enable_inspector || node_use_openssl,
+       "node_enable_inspector requires node_use_openssl")
+
+template("chdir_action") {
+  action(target_name) {
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "script",
+                             "args",
+                           ])
+    assert(defined(cwd), "Need cwd in $target_name")
+    script = "//tools/run-in-dir.py"
+    if (defined(sources)) {
+      sources += [ invoker.script ]
+    } else {
+      assert(defined(inputs))
+      inputs += [ invoker.script ]
+    }
+    args = [
+      rebase_path(cwd),
+      rebase_path(invoker.script),
+    ]
+    args += invoker.args
+  }
+}
+
+# Component build currently not supported.
+assert(!is_component_build)
+
+node_files = read_file("//node_files.json", "json")
+
+copy("node_js2c_inputs") {
+  sources = node_files.node_library_files
+  outputs = [
+    "$target_gen_dir/js2c_inputs/{{source_target_relative}}",
+  ]
+}
+
+copy("node_v8_js2c_inputs") {
+  sources = node_files.v8_library_files
+  outputs = [
+    "$target_gen_dir/js2c_inputs/deps/navigation/{{source_target_relative}}",
+  ]
+}
+
+action("generate_config_gypi") {
+  script = "//tools/generate_config_gypi.py"
+  outputs = [ "$target_gen_dir/js2c_inputs/config.gypi", ]
+  depfile = "$target_gen_dir/$target_name.d"
+
+  script_args = [ "//third_party", "$root_out_dir" ]
+  script_args += outputs
+  script_args += [ depfile ]
+  args = rebase_path(script_args, root_build_dir)
+}
+
+chdir_action("node_js2c") {
+  deps = [
+    ":generate_config_gypi",
+    ":node_js2c_inputs",
+    ":node_v8_js2c_inputs",
+  ]
+
+  macro_inputs = []
+  if (!node_use_dtrace && !node_use_etw) {
+    macro_inputs += [ "src/notrace_macros.py" ]
+  }
+  if (node_debug_lib) {
+    macro_inputs += [ "tools/nodcheck_macros.py" ]
+  } else {
+    macro_inputs += [ "tools/dcheck_macros.py" ]
+  }
+  macro_inputs += [ "tools/check_macros.py" ]
+  config_gypi = [ "$target_gen_dir/js2c_inputs/config.gypi" ]
+  # We use a relative path to work around an assertion in js2c.py.
+  config_gypi_relative_path = ["config.gypi"]
+
+  library_files = node_files.all_library_files
+  inputs = get_target_outputs(":node_js2c_inputs") +
+           get_target_outputs(":node_v8_js2c_inputs") +
+           macro_inputs + config_gypi
+  outputs = [ "$target_gen_dir/node_javascript.cc" ]
+
+  cwd = "$target_gen_dir/js2c_inputs"
+  script = "tools/js2c.py"
+  args = rebase_path(outputs)
+  args += library_files
+  args += rebase_path(macro_inputs) + config_gypi_relative_path
+}
+
+config("node_lib_external") {
+  include_dirs = [ "src" ]
+  defines = [ "NODE_WANT_INTERNALS=1" ]
+}
+
+config("node_lib_internal") {
+  visibility = [ ":*", "src/inspector:*" ]
+  configs = [ ":node_lib_external" ]
+  cflags = [ "-Wno-microsoft-include" ]
+  libs = []
+  cflags_cc = [
+    "-Wno-deprecated-declarations",
+    "-Wno-implicit-fallthrough",
+    "-Wno-return-type",
+    "-Wno-sometimes-uninitialized",
+    "-Wno-unused-label",
+    "-Wno-unused-private-field",
+    "-Wno-unused-variable",
+    "-Wno-string-plus-int",
+    "-Wno-string-conversion",
+  ]
+
+  if (target_cpu == "x86") {
+    node_arch = "ia32"
+  } else {
+    node_arch = target_cpu
+  }
+  if (target_os == "win") {
+    node_platform = "win32"
+  } else if (target_os == "mac") {
+    node_platform = "darwin"
+  } else {
+    node_platform = target_os
+  }
+  defines = [
+    "NODE_ARCH=\"$node_arch\"",
+    "NODE_PLATFORM=\"$node_platform\"",
+  ]
+
+  if (is_win) {
+    defines += [
+      "NOMINMAX",
+      "_UNICODE=1",
+    ]
+    libs += [ "psapi.lib" ]
+  } else {
+    defines += [ "__POSIX__" ]
+  }
+  if (is_mac) {
+    libs += [ "CoreFoundation.framework" ]
+  }
+  if (node_tag != "") {
+    defines += [ "NODE_TAG=\"$node_tag\"" ]
+  }
+  if (node_v8_options != "") {
+    defines += [ "NODE_V8_OPTIONS=\"$node_v8_options\"" ]
+  }
+  if (node_release_urlbase != "") {
+    defines += [ "NODE_RELEASE_URLBASE=\"$node_release_urlbase\"" ]
+  }
+  if (node_use_openssl) {
+    defines += [
+      "NODE_OPENSSL_SYSTEM_CERT_PATH=\"$node_openssl_system_ca_path\"",
+      "HAVE_OPENSSL=1",
+    ]
+  } else {
+    defines += [ "HAVE_OPENSSL=0" ]
+  }
+  if (node_use_v8_platform) {
+    defines += [ "NODE_USE_V8_PLATFORM=1" ]
+  } else {
+    defines += [ "NODE_USE_V8_PLATFORM=0" ]
+  }
+  if (node_report) {
+    defines += [ "NODE_REPORT" ]
+  }
+  if (node_enable_inspector) {
+    defines += [ "HAVE_INSPECTOR=1" ]
+  } else {
+    defines += [ "HAVE_INSPECTOR=0" ]
+  }
+  if (v8_enable_i18n_support) {
+    defines += [ "NODE_HAVE_I18N_SUPPORT=1" ]
+  } else {
+    defines += [ "NODE_HAVE_I18N_SUPPORT=0" ]
+  }
+}
+
+component("node_lib") {
+  deps = [
+    ":node_js2c",
+    "deps/brotli/c:brotli",
+    "deps/cares",
+    "deps/http_parser",
+    "deps/llhttp",
+    "deps/nghttp2",
+    "deps/zlib",
+    "//v8:v8_libplatform",
+  ]
+  public_deps = [
+    "deps/uv",
+    "//v8",
+  ]
+  public_configs = [ ":node_lib_external" ]
+  configs += [ ":node_lib_internal" ]
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [ "//build/config/compiler:no_chromium_code" ]
+  configs -= [ "//build/config/clang:find_bad_constructs" ]
+
+  sources = node_files.node_sources
+  sources += [
+    "$target_gen_dir/node_javascript.cc",
+  ]
+
+  if (v8_enable_i18n_support) {
+    deps += [ "//third_party/icu" ]
+  }
+
+  if (node_enable_inspector) {
+    sources += [
+      "src/inspector_agent.cc",
+      "src/inspector_agent.h",
+      "src/inspector_io.cc",
+      "src/inspector_io.h",
+      "src/inspector_js_api.cc",
+      "src/inspector_socket.cc",
+      "src/inspector_socket.h",
+      "src/inspector_socket_server.cc",
+      "src/inspector_socket_server.h",
+    ]
+    deps += [ "src/inspector" ]
+  }
+
+  if (node_use_openssl) {
+    deps += [ "deps/openssl" ]
+    sources += [
+      "src/node_crypto.cc",
+      "src/node_crypto.h",
+      "src/node_crypto_bio.cc",
+      "src/node_crypto_bio.h",
+      "src/node_crypto_clienthello-inl.h",
+      "src/node_crypto_clienthello.cc",
+      "src/node_crypto_clienthello.h",
+      "src/node_crypto_groups.h",
+      "src/tls_wrap.cc",
+      "src/tls_wrap.h",
+    ]
+  }
+
+  if (node_report) {
+    sources += [
+      "src/node_report.cc",
+      "src/node_report_module.cc",
+      "src/node_report_utils.cc",
+    ]
+  }
+}
+
+if (node_use_code_cache) {
+  executable("node_no_cache") {
+    sources = [
+      "src/node_main.cc",
+      "src/node_code_cache_stub.cc",
+    ]
+    deps = [ ":node_lib" ]
+  }
+
+  action("generate_code_cache") {
+    script = "//tools/generate_code_cache.py"
+    inputs = [ "tools/generate_code_cache.js" ]
+    outputs = [ "$target_gen_dir/node_code_cache.cc" ]
+    node_exe = [
+      get_label_info(":node_no_cache", "root_out_dir") + "/node_no_cache"
+    ]
+
+    args = rebase_path(node_exe + inputs + outputs, root_build_dir)
+    deps = [":node_no_cache"]
+  }
+
+  executable("node") {
+    sources = [
+      "src/node_main.cc",
+      "$target_gen_dir/node_code_cache.cc",
+    ]
+    deps = [
+      ":node_lib",
+      ":generate_code_cache",
+    ]
+  }
+} else {
+  executable("node") {
+    sources = [
+      "src/node_main.cc",
+      "src/node_code_cache_stub.cc",
+    ]
+    deps = [ ":node_lib" ]
+  }
+}
+
+executable("node_cctest") {
+  testonly = true
+  deps = [
+    ":node_lib",
+    "//testing/gtest:gtest_main",
+  ]
+  configs += [ ":node_lib_internal" ]
+  sources = node_files.cctest_sources
+  sources += [ "src/node_code_cache_stub.cc" ]
+  if (node_enable_inspector) {
+    sources += [
+      "test/cctest/test_inspector_socket.cc",
+      "test/cctest/test_inspector_socket_server.cc",
+    ]
+  }
+}

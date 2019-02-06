@@ -1,0 +1,77 @@
+# Copyright 2019 the V8 project authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# This file is used by the GN meta build system to find the root of the source
+# tree and to set startup options. For documentation on the values set in this
+# file, run "gn help dotfile" at the command line.
+
+import("//build/dotfile_settings.gni")
+
+# The location of the build configuration file.
+buildconfig = "//build/config/BUILDCONFIG.gn"
+
+# The secondary source root is a parallel directory tree where
+# GN build files are placed when they can not be placed directly
+# in the source tree, e.g. for third party source trees.
+secondary_source = "//gn/"
+
+# These are the targets to check headers for by default. The files in targets
+# matching these patterns (see "gn help label_pattern" for format) will have
+# their includes checked for proper dependencies when you run either
+# "gn check" or "gn gen --check".
+check_targets = []
+
+# These are the list of GN files that run exec_script. This whitelist exists
+# to force additional review for new uses of exec_script, which is strongly
+# discouraged except for gypi_to_gn calls.
+exec_script_whitelist = build_dotfile_settings.exec_script_whitelist + []
+
+default_args = {
+  #########################################################
+  # Changeable defaults
+  # General build options
+  use_sysroot = false
+  use_custom_libcxx = false
+
+  # Node.js defaults.
+  node_report = true
+  is_debug = false
+
+  # V8 options.
+  v8_embedder_string = "-node.0"
+  v8_enable_embedded_builtins = true
+  v8_enable_i18n_support = true
+
+  # V8 debug options
+  v8_enable_disassembler = true
+  v8_deprecation_warnings = false
+  v8_imminent_deprecation_warnings = false
+  v8_enable_handle_zapping = false
+  v8_enable_pointer_compression = false
+  v8_optimized_debug = false
+  v8_enable_fast_mksnapshot = false
+
+  #########################################################
+  # Alternative configuration not supported. Do not change.
+  # General build options.
+  is_component_build = false
+  clang_use_chrome_plugins = false
+  icu_use_data_file = false
+
+  # Node.js options. Do not change.
+  node_use_v8_platform = true
+
+  # V8 options catering towards Node.js use case.
+  v8_postmortem_support = true
+  v8_promise_internal_field_count = 1
+  v8_use_snapshot = true
+  v8_use_external_startup_data = false
+  v8_untrusted_code_mitigations = false
+  v8_enable_pointer_compression = false
+  v8_enable_31bit_smis_on_64bit_arch = false
+
+  # V8 options.
+  v8_experimental_extra_library_files = []
+  v8_extra_library_files = []
+}
