@@ -33,6 +33,7 @@ default_args = {
   # General build options
   use_sysroot = false
   use_custom_libcxx = false
+  is_component_build = false
 
   # Node.js defaults.
   node_report = true
@@ -55,7 +56,6 @@ default_args = {
   #########################################################
   # Alternative configuration not supported. Do not change.
   # General build options.
-  is_component_build = false
   clang_use_chrome_plugins = false
   icu_use_data_file = false
 

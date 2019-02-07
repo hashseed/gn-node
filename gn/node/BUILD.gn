@@ -77,9 +77,6 @@ template("chdir_action") {
   }
 }
 
-# Component build currently not supported.
-assert(!is_component_build)
-
 node_files = read_file("//node_files.json", "json")
 
 copy("node_js2c_inputs") {
@@ -141,14 +138,15 @@ chdir_action("node_js2c") {
   args += rebase_path(macro_inputs) + config_gypi_relative_path
 }
 
-config("node_lib_external") {
+config("node_base_external") {
   include_dirs = [ "src" ]
   defines = [ "NODE_WANT_INTERNALS=1" ]
+  configs = [ "//v8:external_config" ]
 }
 
-config("node_lib_internal") {
+config("node_base_internal") {
   visibility = [ ":*", "src/inspector:*" ]
-  configs = [ ":node_lib_external" ]
+  configs = [ ":node_base_external" ]
   cflags = [ "-Wno-microsoft-include" ]
   libs = []
   cflags_cc = [
@@ -229,7 +227,7 @@ config("node_lib_internal") {
   }
 }
 
-component("node_lib") {
+source_set("node_base") {
   deps = [
     ":node_js2c",
     "deps/brotli/c:brotli",
@@ -244,11 +242,13 @@ component("node_lib") {
     "deps/uv",
     "//v8",
   ]
-  public_configs = [ ":node_lib_external" ]
-  configs += [ ":node_lib_internal" ]
+  public_configs = [ ":node_base_external" ]
+  configs += [ ":node_base_internal" ]
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
   configs -= [ "//build/config/clang:find_bad_constructs" ]
+  configs -= [ "//build/config/gcc:symbol_visibility_hidden" ]
+  configs += [ "//build/config/gcc:symbol_visibility_default" ]
 
   sources = node_files.node_sources
   sources += [
@@ -305,7 +305,7 @@ if (node_use_code_cache) {
       "src/node_main.cc",
       "src/node_code_cache_stub.cc",
     ]
-    deps = [ ":node_lib" ]
+    deps = [ ":node_base" ]
   }
 
   action("generate_code_cache") {
@@ -320,33 +320,38 @@ if (node_use_code_cache) {
     deps = [":node_no_cache"]
   }
 
-  executable("node") {
+  component("node_lib") {
     sources = [
       "src/node_main.cc",
       "$target_gen_dir/node_code_cache.cc",
     ]
-    deps = [
-      ":node_lib",
-      ":generate_code_cache",
-    ]
+    public_deps = [ ":node_base" ]
+    deps = [ ":generate_code_cache" ]
+    output_name = "node"
   }
 } else {
-  executable("node") {
+  component("node_lib") {
     sources = [
       "src/node_main.cc",
       "src/node_code_cache_stub.cc",
     ]
-    deps = [ ":node_lib" ]
+    public_deps = [ ":node_base" ]
+    output_name = "node"
   }
+}
+
+executable("node") {
+  sources = [ "src/node_main.cc" ]
+  deps = [ ":node_lib" ]
 }
 
 executable("node_cctest") {
   testonly = true
   deps = [
-    ":node_lib",
+    ":node_base",
     "//testing/gtest:gtest_main",
   ]
-  configs += [ ":node_lib_internal" ]
+  configs += [ ":node_base_internal" ]
   sources = node_files.cctest_sources
   sources += [ "src/node_code_cache_stub.cc" ]
   if (node_enable_inspector) {

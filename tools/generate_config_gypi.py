@@ -21,6 +21,11 @@ def string_to_number(v):
   return int(v)
 
 def translate_config(config):
+  if sys.platform == "darwin":
+    shlib_suffix = "dylib"
+  else:
+    shlib_suffix = "so"
+
   return {
     "target_defaults": {
       "default_configuration": "Debug" if config["is_debug"] else "Release",
@@ -31,6 +36,7 @@ def translate_config(config):
       "node_shared": bool_string_to_number(config["is_component_build"]),
       "node_code_cache_path":
           "node_code_cache.cc" if config["node_use_code_cache"] else "",
+      "shlib_suffix": shlib_suffix,
       # v8_enable_inspector is actually a misnomer, and only affects node.
       "v8_enable_inspector":
           bool_string_to_number(config["node_enable_inspector"]),

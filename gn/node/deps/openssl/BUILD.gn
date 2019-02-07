@@ -730,7 +730,7 @@ openssl_defines = [
   "TERMIOS",
 ]
 
-component("openssl") {
+static_library("openssl") {
   sources = crypto_sources
   public = crypto_headers
   defines = openssl_defines

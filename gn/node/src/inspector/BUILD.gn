@@ -62,7 +62,7 @@ source_set("inspector") {
     "//third_party/icu:icuuc",
   ]
   public_configs = [ ":inspector_config" ]
-  configs += [ "//node:node_lib_internal" ]
+  configs += [ "//node:node_base_internal" ]
 }
 
 # This based on the template from //v8/../inspector_protocol.gni
