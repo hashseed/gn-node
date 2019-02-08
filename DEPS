@@ -12,6 +12,9 @@ vars = {
   'clang_url': 'https://chromium.googlesource.com/chromium/src/tools/clang.git',
   'clang_revision': '3a16568a56486d7d032b8ec7b8dae892413a9a7a',
 
+  'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
+  'depot_tools_revision': '61d0c292535e8e6c1102f198ec1ef47f50075ceb',
+
   'googletest_url': 'https://chromium.googlesource.com/external/github.com/google/googletest.git',
   'googletest_revision': '5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081',
 
@@ -39,6 +42,7 @@ deps = {
   'node-ci/build': Var('build_url') + '@' + Var('build_revision'),
   'node-ci/buildtools': Var('buildtools_url') + '@' + Var('buildtools_revision'),
   'node-ci/tools/clang': Var('clang_url') + '@' + Var('clang_revision'),
+  'node-ci/third_party/depot_tools': Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
   'node-ci/third_party/googletest/src': Var('googletest_url') + '@' + Var('googletest_revision'),
   'node-ci/third_party/icu': Var('icu_url') + '@' + Var('icu_revision'),
   'node-ci/third_party/jinja2': Var('jinja2_url') + '@' + Var('jinja2_revision'),
