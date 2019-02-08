@@ -103,4 +103,12 @@ hooks = [
                 '-s', 'node-ci/buildtools/linux64/gn.sha1',
     ],
   },
+  {
+    'name': 'sysroot_x64',
+    'pattern': '.',
+    'condition': 'checkout_linux and checkout_x64',
+    'action': ['python',
+               'node-ci/build/linux/sysroot_scripts/install-sysroot.py',
+               '--arch=x64'],
+  },
 ]
