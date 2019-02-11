@@ -65,6 +65,9 @@ def main(jinja_dir, gn_out_dir, output_file, depfile):
   with open(depfile, "w") as f:
     dot_gn = os.path.abspath(os.path.join(root_dir, ".gn"))
     args_gn = os.path.abspath(os.path.join(gn_out_dir, "args.gn"))
+    if not os.path.exists(args_gn):
+      # Do not depend on args.gn if it does not exist.
+      args_gn = ""
     f.write("%s: %s %s" %(output_file, dot_gn, args_gn))
 
 if __name__ == '__main__':
