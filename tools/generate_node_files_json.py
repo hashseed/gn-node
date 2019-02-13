@@ -5,6 +5,7 @@
 
 import json
 import os
+import subprocess
 import sys
 
 basedir = os.path.dirname(__file__)
@@ -34,10 +35,17 @@ FILENAMES_JSON_HEADER = '''
 def RedirectV8(list):
   return [f.replace('deps/v8/', '../v8/', 1) for f in list]
 
+def GitLsFiles(path):
+  output = subprocess.check_output(["git", "ls-files"], cwd=path)
+  return ['//' + path + '/' + x for x in output.splitlines()]
+
 if __name__ == '__main__':
+  # Set up paths.
   root_dir = os.path.dirname(os.path.dirname(__file__))
-  node_gyp_file = os.path.join(root_dir, 'node', 'node.gyp')
+  node_dir = os.path.join(root_dir, 'node')
+  node_gyp_file = os.path.join(node_dir, 'node.gyp')
   out_file = os.path.join(root_dir, 'node_files.json')
+
   out = {}
   # Load file list from node.gyp.
   node_gyp = LoadPythonDictionary(node_gyp_file)
@@ -72,6 +80,14 @@ if __name__ == '__main__':
   out['cctest_sources'] = cctest_target['sources']
 
   out['headers'] = []
+
+  # Find node/tools/doc content.
+  tools_doc_dir = os.path.join(node_dir, 'tools', 'doc')
+  out['tools_doc_files'] = GitLsFiles(tools_doc_dir)
+
+  # Find node/test/addons content.
+  test_addons_dir = os.path.join(node_dir, 'test', 'addons')
+  out['test_addons_files'] = GitLsFiles(test_addons_dir)
 
   # Collect headers.
   def add_headers(files, dest_dir):

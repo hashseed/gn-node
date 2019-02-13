@@ -1,0 +1,57 @@
+# Copyright 2019 the V8 project authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//node/node_files.gni")
+
+copy("copy_files") {
+  sources = node_files.tools_doc_files
+  outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
+}
+
+copy("copy_addons_md") {
+  sources = [ "//node/doc/api/addons.md" ]
+  outputs = [ "$root_gen_dir/node/doc/api/addons.md" ]
+}
+
+action("npm_install_dependencies") {
+  deps = [
+    ":copy_files",
+    "//node:node",
+  ]
+  script = "//tools/run_executable_in_dir.py"
+  inputs = [ npm_cli ] + get_target_outputs(":copy_files")
+  stamp = "$target_gen_dir/npm_ci.stamp"
+  outputs = [ stamp ]
+  base = target_gen_dir
+  args = [
+    rebase_path(base, root_build_dir),
+    rebase_path(stamp, root_build_dir),
+    rebase_path(node_exe, base),
+    rebase_path(npm_cli, base),
+    "ci",
+  ]
+}
+
+action("generate_addons") {
+  deps = [
+    ":npm_install_dependencies",
+    ":copy_files",
+    ":copy_addons_md",
+    "//node/test/addons:copy_files",
+    "//node:node",
+  ]
+  script = "//tools/run_executable_in_dir.py"
+  inputs = [
+    "$target_gen_dir/addon-verify.js",
+    "//node/doc/api/addons.md",
+  ]
+  stamp = "$target_gen_dir/generate_addons.stamp"
+  outputs = [ stamp ]
+  base = root_gen_dir
+  args = [
+    rebase_path(base, root_build_dir),
+    rebase_path(stamp, root_build_dir),
+    rebase_path(node_exe, base),
+  ] + rebase_path(inputs, base)
+}

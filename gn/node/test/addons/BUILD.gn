@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("gn_all") {
-  deps = [
-    "//node",
-    "//node/tools/doc:generate_addons",
-  ]
+import("//node/node_files.gni")
+
+copy("copy_files") {
+  sources = node_files.test_addons_files
+  outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
 }

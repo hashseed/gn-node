@@ -2,9 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("gn_all") {
-  deps = [
-    "//node",
-    "//node/tools/doc:generate_addons",
-  ]
-}
+node_files = read_file("//node_files.json", "json")
+node_exe = "$root_out_dir/node"
+npm_cli = "//node/deps/npm/bin/npm-cli.js"

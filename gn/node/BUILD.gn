@@ -4,6 +4,7 @@
 # found in the LICENSE file.
 
 import("//v8/gni/v8.gni")
+import("//node/node_files.gni")
 
 declare_args() {
   # Enable the V8 inspector protocol for use with node.
@@ -62,7 +63,7 @@ template("chdir_action") {
                              "args",
                            ])
     assert(defined(cwd), "Need cwd in $target_name")
-    script = "//tools/run-in-dir.py"
+    script = "//tools/run_in_dir.py"
     if (defined(sources)) {
       sources += [ invoker.script ]
     } else {
@@ -76,8 +77,6 @@ template("chdir_action") {
     args += invoker.args
   }
 }
-
-node_files = read_file("//node_files.json", "json")
 
 copy("node_js2c_inputs") {
   sources = node_files.node_library_files
