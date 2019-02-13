@@ -35,9 +35,9 @@ FILENAMES_JSON_HEADER = '''
 def RedirectV8(list):
   return [f.replace('deps/v8/', '../v8/', 1) for f in list]
 
-def GitLsFiles(path):
+def GitLsFiles(path, prefix):
   output = subprocess.check_output(["git", "ls-files"], cwd=path)
-  return ['//' + path + '/' + x for x in output.splitlines()]
+  return [prefix + x for x in output.splitlines()]
 
 if __name__ == '__main__':
   # Set up paths.
@@ -83,11 +83,11 @@ if __name__ == '__main__':
 
   # Find node/tools/doc content.
   tools_doc_dir = os.path.join(node_dir, 'tools', 'doc')
-  out['tools_doc_files'] = GitLsFiles(tools_doc_dir)
+  out['tools_doc_files'] = GitLsFiles(tools_doc_dir, "//node/tools/doc/")
 
   # Find node/test/addons content.
   test_addons_dir = os.path.join(node_dir, 'test', 'addons')
-  out['test_addons_files'] = GitLsFiles(test_addons_dir)
+  out['test_addons_files'] = GitLsFiles(test_addons_dir, "//node/test/addons/")
 
   # Collect headers.
   def add_headers(files, dest_dir):

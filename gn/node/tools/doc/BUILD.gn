@@ -43,7 +43,7 @@ action("generate_addons") {
   ]
   script = "//tools/run_executable_in_dir.py"
   inputs = [
-    "$target_gen_dir/addon-verify.js",
+    "//node/tools/doc/addon-verify.js",
     "//node/doc/api/addons.md",
   ]
   stamp = "$target_gen_dir/generate_addons.stamp"
