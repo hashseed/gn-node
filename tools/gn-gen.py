@@ -16,6 +16,7 @@ def GenerateBuildFiles(options):
   gn_args.append("is_debug=%s" % ToBool(options.debug))
   gn_args.append("use_goma=%s" % ToBool(options.goma))
   gn_args.append("is_component_build=%s" % ToBool(options.shared))
+  gn_args.append("node_use_code_cache=%s" % ToBool(not options.no_cache))
   if options.sysroot:
     gn_args.append("use_sysroot=true")
     gn_args.append("use_custom_libcxx=true")
@@ -52,6 +53,8 @@ def ParseOptions(args):
   parser.add_argument("--sysroot", help="Use bundled sysroot",
                       action="store_true", default=False)
   parser.add_argument("--debug", help="Debug mode",
+                      action="store_true", default=False)
+  parser.add_argument("--no-cache", help="Do not use code cache",
                       action="store_true", default=False)
   options = parser.parse_args(args)
 
