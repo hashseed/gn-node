@@ -32,6 +32,7 @@ def translate_config(config):
           "Debug" if config["is_debug"] == "true" else "Release",
     },
     "variables": {
+      "asan": bool_string_to_number(config["is_asan"]),
       "node_module_version": string_to_number(config["node_module_version"]),
       "node_report": config["node_report"],
       "node_shared": bool_string_to_number(config["is_component_build"]),

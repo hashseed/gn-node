@@ -16,19 +16,19 @@ deps:
 
 # Generate GN configs
 out/Release:
-	gn gen $@ -q --args="is_debug = false"
+	tools/gn-gen.py out/Release
 
 out/Debug:
-	gn gen $@ -q --args="is_debug = true v8_optimized_debug = true"
+	tools/gn-gen.py out/Debug --debug
 
 # Build
 .PHONY: build.Release
 build.Release: out/Release
-	gn gen $< && autoninja -C $<
+	autoninja -C $<
 
 .PHONY:
 build.Debug: out/Debug
-	gn gen $< && autoninja -C $<
+	autoninja -C $<
 
 # Link node binary
 node: build.Release
