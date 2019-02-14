@@ -89,16 +89,18 @@ if __name__ == '__main__':
   test_addons_dir = os.path.join(node_dir, 'test', 'addons')
   out['test_addons_files'] = GitLsFiles(test_addons_dir, "//node/test/addons/")
 
-  # Collect headers.
-  def add_headers(files, dest_dir):
-    if 'src/node.h' in files:
-      files = [f for f in files if f.endswith('.h')]
-    files = RedirectV8(files)
-    hs = {'files': sorted(files), 'dest_dir': dest_dir}
-    out['headers'].append(hs)
+  # Find node/test/node-api content.
+  test_node_api_dir = os.path.join(node_dir, 'test', 'node-api')
+  out['test_node_api_files'] = GitLsFiles(test_node_api_dir,
+                                          "//node/test/node-api/")
+  # Find node/test/js-native-api content.
+  test_js_native_api_dir = os.path.join(node_dir, 'test', 'js-native-api')
+  out['test_js_native_api_files'] = GitLsFiles(test_js_native_api_dir,
+                                               "//node/test/js-native-api/")
 
-  install.variables = {'node_shared_libuv': 'false'}
-  install.headers(add_headers)
+  # Find v8/include content.
+  v8_include_dir = os.path.join(root_dir, 'v8', 'include')
+  out['v8_headers'] = GitLsFiles(v8_include_dir, "//v8/include/")
 
   # Write file list as JSON.
   with open(out_file, 'w') as f:

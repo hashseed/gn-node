@@ -243,9 +243,9 @@ source_set("node_base") {
   ]
   public_configs = [ ":node_base_external" ]
   configs += [ ":node_base_internal" ]
+  configs -= [ "//build/config/clang:find_bad_constructs" ]
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
-  configs -= [ "//build/config/clang:find_bad_constructs" ]
   configs -= [ "//build/config/gcc:symbol_visibility_hidden" ]
   configs += [ "//build/config/gcc:symbol_visibility_default" ]
 
@@ -311,11 +311,9 @@ if (node_use_code_cache) {
     script = "//tools/generate_code_cache.py"
     inputs = [ "tools/generate_code_cache.js" ]
     outputs = [ "$target_gen_dir/node_code_cache.cc" ]
-    node_exe = [
-      get_label_info(":node_no_cache", "root_out_dir") + "/node_no_cache"
-    ]
+    node_no_cache = [ "$root_out_dir/node_no_cache" ]
 
-    args = rebase_path(node_exe + inputs + outputs, root_build_dir)
+    args = rebase_path(node_no_cache + inputs + outputs, root_build_dir)
     deps = [":node_no_cache"]
   }
 

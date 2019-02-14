@@ -3,12 +3,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 config("nghttp2_config") {
   defines = [ "NGHTTP2_STATICLIB" ]
   include_dirs = [ "lib/includes" ]
 }
 
-static_library("nghttp2") {
+node_dep("nghttp2") {
   public_configs = [ ":nghttp2_config" ]
   defines = [
     "_U_",

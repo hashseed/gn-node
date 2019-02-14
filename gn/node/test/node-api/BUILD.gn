@@ -6,19 +6,18 @@ import("//node/node_files.gni")
 import("//node/node.gni")
 
 copy("copy_files") {
-  sources = node_files.test_addons_files
+  sources = node_files.test_node_api_files
   outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
 }
 
 build_addons("build") {
   deps = [
     ":copy_files",
-    "..:copy_node_headers",
-    "..:copy_v8_headers",
+    "..:copy_node_api_headers",
     "..:copy_test_files",
-    "//node/tools/doc:generate_addons",
+    "../js-native-api:copy_files",
   ]
-  inputs = node_files.test_addons_files +
-           node_files.v8_headers +
-           node_headers
+  inputs = node_api_headers +
+           node_files.test_js_native_api_files +
+           node_files.test_node_api_files
 }

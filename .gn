@@ -71,6 +71,7 @@ default_args = {
   v8_enable_pointer_compression = false
   v8_enable_31bit_smis_on_64bit_arch = false
   v8_use_siphash = true
+  v8_expose_symbols = true
 
   # V8 options.
   v8_experimental_extra_library_files = []

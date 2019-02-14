@@ -1,0 +1,28 @@
+# Copyright 2019 the V8 project authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//node/node_files.gni")
+
+copy("copy_node_headers") {
+  sources = node_headers
+  outputs = [ "$root_gen_dir/{{source}}" ]
+}
+
+copy("copy_v8_headers") {
+  sources = node_files.v8_headers
+  outputs = [ "$root_gen_dir/node/deps/{{source}}" ]
+}
+
+copy("copy_node_api_headers") {
+  sources = node_api_headers
+  outputs = [ "$root_gen_dir/{{source}}" ]
+}
+
+copy("copy_test_files") {
+  sources = [
+    "//node/test/common",
+    "//node/test/testpy",
+  ]
+  outputs = [ "$root_gen_dir/{{source}}" ]
+}

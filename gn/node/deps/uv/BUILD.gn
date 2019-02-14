@@ -3,6 +3,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 config("libuv_config") {
   include_dirs = [ "include" ]
 
@@ -22,7 +24,7 @@ config("libuv_config") {
   }
 }
 
-static_library("uv") {
+node_dep("uv") {
   include_dirs = [
     "include",
     "src",

@@ -3,6 +3,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 if (is_win) {
   import("//build/config/win/visual_studio_version.gni")
 }
@@ -31,7 +33,7 @@ common_sources = [
   "common/version.h",
 ]
 
-static_library("common") {
+source_set("common") {
   sources = common_sources
   public_configs = [ ":includes" ]
   deps = [
@@ -39,7 +41,7 @@ static_library("common") {
   ]
 }
 
-static_library("common_no_dictionary_data") {
+source_set("common_no_dictionary_data") {
   sources = common_sources
   public_configs = [ ":includes" ]
   deps = [
@@ -122,16 +124,10 @@ enc_sources = [
   "enc/write_bits.h",
 ]
 
-static_library("brotli") {
+node_dep("brotli") {
   sources = enc_sources + dec_sources
   public_configs = [ ":includes" ]
 
   public_deps = [ ":headers" ]
   deps = [ ":common" ]
-
-  configs -= [ "//build/config/compiler:chromium_code" ]
-  configs += [ "//build/config/compiler:no_chromium_code" ]
-
-  configs -= [ "//build/config/compiler:default_optimization" ]
-  configs += [ "//build/config/compiler:optimize_max" ]
 }

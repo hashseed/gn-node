@@ -3,5 +3,20 @@
 # found in the LICENSE file.
 
 node_files = read_file("//node_files.json", "json")
-node_exe = "$root_out_dir/node"
 npm_cli = "//node/deps/npm/bin/npm-cli.js"
+node_headers = [
+  "//node/deps/uv/include",
+  "//node/src/node.h",
+  "//node/src/node_buffer.h",
+  "//node/src/node_object_wrap.h",
+  "//node/src/node_version.h",
+  "//node/common.gypi",
+]
+node_api_headers = [
+  "//node/src/node_api.h",
+  "//node/src/node_api_types.h",
+  "//node/src/js_native_api.h",
+  "//node/src/js_native_api_types.h",
+  "//node/src/js_native_api_v8.h",
+  "//node/src/js_native_api_v8_internals.h",
+]

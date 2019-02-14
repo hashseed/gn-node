@@ -28,7 +28,8 @@ def translate_config(config):
 
   return {
     "target_defaults": {
-      "default_configuration": "Debug" if config["is_debug"] else "Release",
+      "default_configuration":
+          "Debug" if config["is_debug"] == "true" else "Release",
     },
     "variables": {
       "node_module_version": string_to_number(config["node_module_version"]),

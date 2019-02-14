@@ -1,0 +1,63 @@
+# Copyright 2019 the V8 project authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+node_exe = "$root_out_dir/node"
+
+template("node_dep") {
+  static_library(target_name) {
+    forward_variables_from(invoker, "*", ["configs", "remove_configs"])
+    if (defined(invoker.configs)) {
+      configs += invoker.configs
+    }
+    configs -= [ "//build/config/gcc:symbol_visibility_hidden" ]
+    configs += [ "//build/config/gcc:symbol_visibility_default" ]
+    configs += [ "//build/config/compiler:no_chromium_code" ]
+    configs -= [ "//build/config/compiler:chromium_code" ]
+    if (defined(invoker.remove_configs)) {
+      configs -= invoker.remove_configs
+    }
+  }
+}
+
+template("call_node") {
+  action(target_name) {
+    deps = invoker.deps + [ "//node:node" ]
+    script = "//tools/run_executable_in_dir.py"
+    inputs = invoker.inputs
+    stamp = "$target_gen_dir/$target_name.stamp"
+    outputs = [ stamp ]
+    base = invoker.base
+    env = []
+    if (defined(invoker.env)) {
+      env = invoker.env
+    }
+    args = [
+      rebase_path(base, root_build_dir),
+      rebase_path(stamp, root_build_dir),
+    ] + env + [
+      rebase_path(node_exe, base),
+    ] + invoker.args
+  }
+}
+
+# TODO: add correct list of outputs.
+template("build_addons") {
+  call_node(target_name) {
+    deps = invoker.deps
+    build_scripts = [
+      "//node/tools/build-addons.js",
+      "//node/deps/npm/node_modules/node-gyp/bin/node-gyp.js",
+    ]
+    inputs = invoker.inputs + build_scripts
+    base = root_gen_dir
+    env = [
+      "--env", "npm_config_loglevel", "silent",
+      "--env", "npm_config_python", "python",
+      "--env", "npm_config_nodedir",
+          rebase_path("$root_gen_dir/node", root_build_dir),
+    ]
+    args = rebase_path(build_scripts, base) +
+           [ rebase_path(target_gen_dir, base) ]
+  }
+}

@@ -2,6 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 config("external_config") {
   include_dirs = [ "openssl/include" ]
 }
@@ -730,7 +732,7 @@ openssl_defines = [
   "TERMIOS",
 ]
 
-static_library("openssl") {
+node_dep("openssl") {
   sources = crypto_sources
   public = crypto_headers
   defines = openssl_defines
@@ -746,8 +748,6 @@ static_library("openssl") {
   ]
 
   public_configs = [ ":external_config" ]
-  configs += [ ":internal_config" ]
-  configs += [ "//build/config/compiler:no_chromium_code" ]
-  configs -= [ "//build/config/compiler:chromium_code" ]
-  configs -= [ "//build/config/compiler:compiler" ]
+  configs = [ ":internal_config" ]
+  remove_configs = [ "//build/config/compiler:compiler" ]
 }

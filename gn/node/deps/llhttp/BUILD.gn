@@ -3,11 +3,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 config("llhttp_config") {
   include_dirs = [ "include" ]
 }
 
-static_library("llhttp") {
+node_dep("llhttp") {
   include_dirs = [ "include" ]
   public_configs = [ ":llhttp_config" ]
   sources = [

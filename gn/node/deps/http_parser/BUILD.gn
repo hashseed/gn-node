@@ -3,12 +3,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 config("http_parser_config") {
   defines = [ "HTTP_PARSER_STRICT=0" ]
   include_dirs = [ "." ]
 }
 
-static_library("http_parser") {
+node_dep("http_parser") {
   include_dirs = [ "." ]
   public_configs = [ ":http_parser_config" ]
   cflags_c = [ "-Wno-string-conversion" ]

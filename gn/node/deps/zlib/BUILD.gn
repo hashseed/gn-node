@@ -3,6 +3,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//node/node.gni")
+
 config("includes") {
   include_dirs = [ "." ]
 }
@@ -23,7 +25,7 @@ config("ignored_warnings") {
   }
 }
 
-source_set("zlib") {
+node_dep("zlib") {
   sources = [
     "adler32.c",
     "compress.c",
@@ -57,7 +59,8 @@ source_set("zlib") {
     defines = [ "ZLIB_DLL" ]
   }
 
-  configs += [ ":ignored_warnings" ]
-
-  public_configs = [ ":includes" ]
+  public_configs = [
+    ":includes",
+    ":ignored_warnings"
+  ]
 }

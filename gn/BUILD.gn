@@ -5,6 +5,8 @@
 group("gn_all") {
   deps = [
     "//node",
-    "//node/tools/doc:generate_addons",
+    "//node/test/addons:build",
+    "//node/test/node-api:build",
+    "//node/test/js-native-api:build",
   ]
 }
