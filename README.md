@@ -58,10 +58,15 @@ JOBS=4 make test
 ## Not yet implemented
 * Support building on Mac and Windows. The current configurations have only been tested for Linux.
 * Platform-specific OpenSSL build configurations. The current build only supports the slowest platform-independent configuration.
-* Enable shared library build.
 
 ## Explicit non-goals
 * To translate every configuration from the GYP build.
 * To support platforms not supported by Chromium.
 * To replace Node.js' test runner with the one used by V8.
 * To use GN to build native modules.
+
+## Advantages over upstream Node.js
+* Proper dependency management. Upgrading dependencies is just a small change in `DEPS`.
+* No need to port V8 changes to GYP.
+* Availability of sanitizers.
+* Toolchain to build is bundled as dependency.
