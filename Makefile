@@ -24,11 +24,11 @@ out/Debug:
 # Build
 .PHONY: build.Release
 build.Release: out/Release
-	autoninja -C $<
+	autoninja -C $< gn_all
 
 .PHONY:
 build.Debug: out/Debug
-	autoninja -C $<
+	autoninja -C $< gn_all
 
 # Link node binary
 node: build.Release

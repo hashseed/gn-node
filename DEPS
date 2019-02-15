@@ -4,10 +4,10 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '2030c341b05453dd2aad584ffac3787d47d2555c',
+  'build_revision': 'e148b4cffcc96e9e44416038197734d4c773d014',
 
-  'buildtools_url': 'https://chromium.googlesource.com/chromium/buildtools.git',
-  'buildtools_revision': '6fbda1b24c1893a893b17aa219b765b9e7c801d8',
+  'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
+  'buildtools_revision': '106e9fce3799633f42b45ca8bbe9e84e1e23560',
 
   'clang_url': 'https://chromium.googlesource.com/chromium/src/tools/clang.git',
   'clang_revision': '1dc75416344975a4fdcc5f805985bec3d704df7d',
@@ -28,7 +28,7 @@ vars = {
   'markupsafe_revision': '8f45f5cfa0009d2a70589bcda0349b8cb2b72783',
 
   'node_url': 'https://chromium.googlesource.com/external/github.com/v8/node.git',
-  'node_revision': 'd422eda408ee2fa72e95f4f00ea3948dcc70ae22',
+  'node_revision': '4764ce24a290ae2ca7c77db2457852892b6e488c',
 
   'trace_common_url': 'https://chromium.googlesource.com/chromium/src/base/trace_event/common.git',
   'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',

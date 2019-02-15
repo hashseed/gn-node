@@ -231,6 +231,7 @@ source_set("node_base") {
     ":node_js2c",
     "deps/brotli/c:brotli",
     "deps/cares",
+    "deps/histogram",
     "deps/http_parser",
     "deps/llhttp",
     "deps/nghttp2",
