@@ -14,9 +14,9 @@ def ToBool(option):
 def GenerateBuildFiles(options):
   gn_args = []
   # Only one sanitizer is enabled.
-  assert(options.asan + options.tsan + options.ubsan <= 1)
+  assert(options.asan + options.tsan + options.ubsan + options.ubsan_vptr <= 1)
 
-  if options.asan or options.tsan or options.ubsan:
+  if options.asan or options.tsan or options.ubsan or options.ubsan_vptr:
     options.shared = False
     options.debug = False
     options.sysroot = True
@@ -35,6 +35,10 @@ def GenerateBuildFiles(options):
 
   if options.ubsan:
     gn_args.append("is_ubsan=true")
+    gn_args.append("is_ubsan_no_recover=true")
+
+  if options.ubsan_vptr:
+    gn_args.append("is_ubsan_vptr=true")
     gn_args.append("is_ubsan_no_recover=true")
 
   gn_args.append("is_debug=%s" % ToBool(options.debug))
@@ -57,6 +61,9 @@ def ParseOptions(args):
   parser.add_argument("--tsan", help="Use thread sanitizer",
                       action="store_true", default=False)
   parser.add_argument("--ubsan", help="Use undefined-behavior sanitizer",
+                      action="store_true", default=False)
+  parser.add_argument("--ubsan-vptr",
+                      help="Use undefined-behavior (vptr) sanitizer",
                       action="store_true", default=False)
   parser.add_argument("--shared", help="Use component build",
                       action="store_true", default=False)
