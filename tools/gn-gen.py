@@ -13,24 +13,34 @@ def ToBool(option):
 
 def GenerateBuildFiles(options):
   gn_args = []
+  # Only one sanitizer is enabled.
+  assert(options.asan + options.tsan + options.ubsan <= 1)
+
+  if options.asan or options.tsan or options.ubsan:
+    options.shared = False
+    options.debug = False
+    options.sysroot = True
+    gn_args.append("v8_enable_test_features=true")
+
+  if options.sysroot:
+    gn_args.append("use_sysroot=true")
+    gn_args.append("use_custom_libcxx=true")
+
+  if options.asan:
+    gn_args.append("is_lsan=true")
+    gn_args.append("is_asan=true")
+
+  if options.tsan:
+    gn_args.append("is_tsan=true")
+
+  if options.ubsan:
+    gn_args.append("is_ubsan=true")
+    gn_args.append("is_ubsan_no_recover=true")
+
   gn_args.append("is_debug=%s" % ToBool(options.debug))
   gn_args.append("use_goma=%s" % ToBool(options.goma))
   gn_args.append("is_component_build=%s" % ToBool(options.shared))
   gn_args.append("node_use_code_cache=%s" % ToBool(not options.no_cache))
-  if options.sysroot:
-    gn_args.append("use_sysroot=true")
-    gn_args.append("use_custom_libcxx=true")
-  if options.asan:
-    gn_args.append("is_lsan=true")
-    gn_args.append("is_asan=true")
-    gn_args.append("v8_enable_test_features=true")
-  if options.tsan:
-    gn_args.append("is_tsan=true")
-    gn_args.append("v8_enable_test_features=true")
-  if options.ubsan:
-    gn_args.append("is_ubsan=true")
-    gn_args.append("is_ubsan_no_recover=true")
-    gn_args.append("v8_enable_test_features=true")
 
   flattened_args = ' '.join(gn_args)
   args = ["gn", "gen", options.out_dir, "-q", "--args=" + flattened_args]
@@ -56,14 +66,7 @@ def ParseOptions(args):
                       action="store_true", default=False)
   parser.add_argument("--no-cache", help="Do not use code cache",
                       action="store_true", default=False)
-  options = parser.parse_args(args)
-
-  # Only one sanitizer is enabled.
-  assert(options.asan + options.tsan + options.ubsan <= 1)
-  if options.asan or options.tsan or options.ubsan:
-    options.shared = False
-    options.debug = False
-  return options
+  return parser.parse_args(args)
 
 if __name__ == "__main__":
   options = ParseOptions(sys.argv[1:])
