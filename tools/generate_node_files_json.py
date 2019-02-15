@@ -41,15 +41,17 @@ def GitLsFiles(path, prefix):
 
 if __name__ == '__main__':
   # Set up paths.
-  root_dir = os.path.dirname(os.path.dirname(__file__))
-  node_dir = os.path.join(root_dir, 'node')
-  node_gyp_file = os.path.join(node_dir, 'node.gyp')
-  out_file = os.path.join(root_dir, 'node_files.json')
-
+  root_dir = sys.argv[1]
+  out_file = sys.argv[2]
+  node_dir = os.path.join(root_dir, "node")
+  node_gyp_file = os.path.join(node_dir, "node.gyp")
+  openssl_gyp_file = os.path.join(node_dir,
+      "deps", "openssl", "config", "archs",
+      "linux-x86_64", "no-asm", "openssl.gypi")
   out = {}
-  # Load file list from node.gyp.
+  # Load file lists from gyp files.
   node_gyp = LoadPythonDictionary(node_gyp_file)
-
+  openssl_gyp = LoadPythonDictionary(openssl_gyp_file)
   # Find JS lib file and single out files from V8.
   library_files = node_gyp['variables']['library_files']
   out['v8_library_files'] = [
@@ -79,8 +81,9 @@ if __name__ == '__main__':
       if t['target_name'] == 'cctest')
   out['cctest_sources'] = cctest_target['sources']
 
-  out['headers'] = []
-
+  # Find OpenSSL sources.
+  openssl_sources = openssl_gyp['variables']['openssl_sources']
+  out['openssl_sources'] = openssl_sources
   # Find node/tools/doc content.
   tools_doc_dir = os.path.join(node_dir, 'tools', 'doc')
   out['tools_doc_files'] = GitLsFiles(tools_doc_dir, "//node/tools/doc/")
@@ -107,3 +110,5 @@ if __name__ == '__main__':
     f.write(FILENAMES_JSON_HEADER)
     f.write(json.dumps(out, sort_keys=True, indent=2, separators=(',', ': ')))
     f.write('\n')
+
+  print("Generated file list: %s" % os.path.abspath(out_file))

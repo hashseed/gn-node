@@ -2,9 +2,21 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("gn_all") {
+output = exec_script("//tools/generate_node_files_json.py",
+            rebase_path([
+              "//",
+              "$root_build_dir/node_files.json",
+            ], root_build_dir),
+            "trim string",
+            [ "//node/node.gyp" ])
+
+print(output)
+
+group("test_all") {
+  testonly = true
   deps = [
-    "//node",
+    "//node:node",
+    "//node:node_cctest",
     "//node/test/addons:build",
     "//node/test/node-api:build",
     "//node/test/js-native-api:build",

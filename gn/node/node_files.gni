@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-node_files = read_file("//node_files.json", "json")
+node_files = read_file("$root_build_dir/node_files.json", "json")
 npm_cli = "//node/deps/npm/bin/npm-cli.js"
 node_headers = [
   "//node/deps/uv/include",

@@ -34,7 +34,7 @@ vars = {
   'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',
 
   'v8_url': 'https://chromium.googlesource.com/v8/v8.git',
-  'v8_revision': '77c94fae3a1a1c0588d905f2b3afa60b5a396ecf',
+  'v8_revision': 'origin/master',
 }
 
 deps = {
@@ -60,11 +60,6 @@ hooks = [
     'name': 'clang',
     'pattern': '.',
     'action': ['python', 'node-ci/tools/clang/scripts/update.py'],
-  },
-  {
-    'name': 'generate_node_filelist',
-    'pattern': 'node-ci/node',
-    'action': ['python', 'node-ci/tools/generate_node_files_json.py'],
   },
   # Pull GN using checked-in hashes.
   {
