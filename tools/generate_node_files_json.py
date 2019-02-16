@@ -42,7 +42,6 @@ def GitLsFiles(path, prefix):
 if __name__ == '__main__':
   # Set up paths.
   root_dir = sys.argv[1]
-  out_file = sys.argv[2]
   node_dir = os.path.join(root_dir, "node")
   node_gyp_file = os.path.join(node_dir, "node.gyp")
   openssl_gyp_file = os.path.join(node_dir,
@@ -106,9 +105,4 @@ if __name__ == '__main__':
   out['v8_headers'] = GitLsFiles(v8_include_dir, "//v8/include/")
 
   # Write file list as JSON.
-  with open(out_file, 'w') as f:
-    f.write(FILENAMES_JSON_HEADER)
-    f.write(json.dumps(out, sort_keys=True, indent=2, separators=(',', ': ')))
-    f.write('\n')
-
-  print("Generated file list: %s" % os.path.abspath(out_file))
+  print(json.dumps(out, sort_keys=True, indent=2, separators=(',', ': ')))

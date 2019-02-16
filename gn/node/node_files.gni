@@ -2,8 +2,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-node_files = read_file("$root_build_dir/node_files.json", "json")
+node_files = exec_script(
+    "//tools/generate_node_files_json.py",
+    rebase_path([ "//" ], root_build_dir),
+    "json")
+
 npm_cli = "//node/deps/npm/bin/npm-cli.js"
+
 node_headers = [
   "//node/deps/uv/include",
   "//node/src/node.h",
@@ -12,6 +17,7 @@ node_headers = [
   "//node/src/node_version.h",
   "//node/common.gypi",
 ]
+
 node_api_headers = [
   "//node/src/node_api.h",
   "//node/src/node_api_types.h",

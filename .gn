@@ -26,7 +26,7 @@ check_targets = ["*"]
 # to force additional review for new uses of exec_script, which is strongly
 # discouraged except for gypi_to_gn calls.
 exec_script_whitelist = build_dotfile_settings.exec_script_whitelist +
-                        [ "//BUILD.gn" ]
+                        [ "//node/node_files.gni" ]
 
 default_args = {
   #########################################################
