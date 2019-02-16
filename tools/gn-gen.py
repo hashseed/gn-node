@@ -43,6 +43,7 @@ def GenerateBuildFiles(options):
 
   gn_args.append("is_debug=%s" % ToBool(options.debug))
   gn_args.append("use_goma=%s" % ToBool(options.goma))
+  gn_args.append("use_jumbo_build=%s" % ToBool(options.jumbo))
   gn_args.append("is_component_build=%s" % ToBool(options.shared))
   gn_args.append("node_use_code_cache=%s" % ToBool(not options.no_cache))
 
@@ -55,7 +56,10 @@ def ParseOptions(args):
   parser = argparse.ArgumentParser(
       description="Generate GN build configurations")
   parser.add_argument("out_dir", help="Build directory")
-  parser.add_argument("--goma", help="Use goma", action="store_true")
+  parser.add_argument("--goma", help="Use goma to speed up compile",
+                      action="store_true")
+  parser.add_argument("--jumbo", help="Use jumbo to speed up compile",
+                      action="store_true")
   parser.add_argument("--asan", help="Use address sanitizer",
                       action="store_true", default=False)
   parser.add_argument("--tsan", help="Use thread sanitizer",

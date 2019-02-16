@@ -11,6 +11,8 @@ npm_cli = "//node/deps/npm/bin/npm-cli.js"
 
 node_headers = [
   "//node/deps/uv/include",
+  "//node/deps/openssl/openssl/include",
+  "//node/deps/openssl/config",
   "//node/src/node.h",
   "//node/src/node_buffer.h",
   "//node/src/node_object_wrap.h",

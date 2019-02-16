@@ -4,6 +4,7 @@
 # found in the LICENSE file.
 
 import("//v8/gni/v8.gni")
+import("//node/node.gni")
 
 inspector_protocol_dir = "../../tools/inspector_protocol"
 
@@ -32,7 +33,7 @@ _protocol_generated = [
 inspector_protocol_package = "src/node/inspector/protocol"
 inspector_protocol_output = "node/inspector/protocol"
 
-source_set("inspector") {
+node_dep("inspector") {
   sources = [
     "main_thread_interface.cc",
     "main_thread_interface.h",
@@ -62,7 +63,7 @@ source_set("inspector") {
     "//third_party/icu:icuuc",
   ]
   public_configs = [ ":inspector_config" ]
-  configs += [ "//node:node_base_internal" ]
+  configs = [ "//node:node_base_internal" ]
 }
 
 # This based on the template from //v8/../inspector_protocol.gni

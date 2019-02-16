@@ -59,6 +59,7 @@ default_args = {
   # General build options.
   clang_use_chrome_plugins = false
   icu_use_data_file = false
+  symbol_level = 1
 
   # Node.js options. Do not change.
   node_use_v8_platform = true
