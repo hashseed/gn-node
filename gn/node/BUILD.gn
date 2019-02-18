@@ -244,9 +244,7 @@ source_set("node_base") {
   ]
   public_configs = [
     ":node_base_external",
-    "//build/config/compiler:chromium_code",
     "//build/config/compiler:no_chromium_code",
-    "//build/config/gcc:symbol_visibility_hidden",
     "//build/config/gcc:symbol_visibility_default",
   ]
   configs += [ ":node_base_internal" ]

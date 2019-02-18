@@ -13,7 +13,7 @@ def main(argv):
   # Parse env variables provided in the form `--env name value`.
   # Convert paths to absolute paths.
   env = os.environ.copy()
-  while argv[arg_start] == "--env":
+  while argv[arg_start] == '--env':
     value = argv[arg_start + 2]
     if os.path.exists(value):
       value = os.path.abspath(value)

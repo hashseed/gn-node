@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 basedir = os.path.dirname(__file__)
-sys.path.append(os.path.join(basedir, os.pardir, "node", "tools"))
+sys.path.append(os.path.join(basedir, os.pardir, 'node', 'tools'))
 import install
 
 def LoadPythonDictionary(path):
@@ -20,9 +20,9 @@ def LoadPythonDictionary(path):
     e.filename = path
     raise
   except Exception, e:
-    raise Exception("Unexpected error while reading %s: %s" % (path, str(e)))
+    raise Exception('Unexpected error while reading %s: %s' % (path, str(e)))
 
-  assert isinstance(file_data, dict), "%s does not eval to a dictionary" % path
+  assert isinstance(file_data, dict), '%s does not eval to a dictionary' % path
 
   return file_data
 
@@ -36,17 +36,17 @@ def RedirectV8(list):
   return [f.replace('deps/v8/', '../v8/', 1) for f in list]
 
 def GitLsFiles(path, prefix):
-  output = subprocess.check_output(["git", "ls-files"], cwd=path)
+  output = subprocess.check_output(['git', 'ls-files'], cwd=path)
   return [prefix + x for x in output.splitlines()]
 
 if __name__ == '__main__':
   # Set up paths.
   root_dir = sys.argv[1]
-  node_dir = os.path.join(root_dir, "node")
-  node_gyp_file = os.path.join(node_dir, "node.gyp")
+  node_dir = os.path.join(root_dir, 'node')
+  node_gyp_file = os.path.join(node_dir, 'node.gyp')
   openssl_gyp_file = os.path.join(node_dir,
-      "deps", "openssl", "config", "archs",
-      "linux-x86_64", "no-asm", "openssl.gypi")
+      'deps', 'openssl', 'config', 'archs',
+      'linux-x86_64', 'no-asm', 'openssl.gypi')
   out = {}
   # Load file lists from gyp files.
   node_gyp = LoadPythonDictionary(node_gyp_file)
@@ -85,24 +85,24 @@ if __name__ == '__main__':
   out['openssl_sources'] = openssl_sources
   # Find node/tools/doc content.
   tools_doc_dir = os.path.join(node_dir, 'tools', 'doc')
-  out['tools_doc_files'] = GitLsFiles(tools_doc_dir, "//node/tools/doc/")
+  out['tools_doc_files'] = GitLsFiles(tools_doc_dir, '//node/tools/doc/')
 
   # Find node/test/addons content.
   test_addons_dir = os.path.join(node_dir, 'test', 'addons')
-  out['test_addons_files'] = GitLsFiles(test_addons_dir, "//node/test/addons/")
+  out['test_addons_files'] = GitLsFiles(test_addons_dir, '//node/test/addons/')
 
   # Find node/test/node-api content.
   test_node_api_dir = os.path.join(node_dir, 'test', 'node-api')
   out['test_node_api_files'] = GitLsFiles(test_node_api_dir,
-                                          "//node/test/node-api/")
+                                          '//node/test/node-api/')
   # Find node/test/js-native-api content.
   test_js_native_api_dir = os.path.join(node_dir, 'test', 'js-native-api')
   out['test_js_native_api_files'] = GitLsFiles(test_js_native_api_dir,
-                                               "//node/test/js-native-api/")
+                                               '//node/test/js-native-api/')
 
   # Find v8/include content.
   v8_include_dir = os.path.join(root_dir, 'v8', 'include')
-  out['v8_headers'] = GitLsFiles(v8_include_dir, "//v8/include/")
+  out['v8_headers'] = GitLsFiles(v8_include_dir, '//v8/include/')
 
   # Write file list as JSON.
   print(json.dumps(out, sort_keys=True, indent=2, separators=(',', ': ')))

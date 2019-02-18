@@ -34,7 +34,7 @@ vars = {
   'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',
 
   'v8_url': 'https://chromium.googlesource.com/v8/v8.git',
-  'v8_revision': 'origin/master',
+  'v8_revision': 'dbaa5b7b9ae56e4b85cd58c7e15f87bd35bd5766',
 }
 
 deps = {
