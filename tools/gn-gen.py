@@ -55,27 +55,27 @@ def GenerateBuildFiles(options):
 def ParseOptions(args):
   parser = argparse.ArgumentParser(
       description='Generate GN build configurations')
-  parser.add_argument('out_dir', help='Build directory')
-  parser.add_argument('--goma', help='Use goma to speed up compile',
+  parser.add_argument('out_dir', help='build directory')
+  parser.add_argument('--goma', help='use goma to speed up compile',
                       action='store_true')
-  parser.add_argument('--jumbo', help='Use jumbo to speed up compile',
+  parser.add_argument('--jumbo', help='use jumbo to speed up compile',
                       action='store_true')
-  parser.add_argument('--asan', help='Use address sanitizer',
+  parser.add_argument('--asan', help='build with address sanitizer',
                       action='store_true', default=False)
-  parser.add_argument('--tsan', help='Use thread sanitizer',
+  parser.add_argument('--tsan', help='build with thread sanitizer',
                       action='store_true', default=False)
-  parser.add_argument('--ubsan', help='Use undefined-behavior sanitizer',
+  parser.add_argument('--ubsan', help='build with undefined-behavior sanitizer',
                       action='store_true', default=False)
   parser.add_argument('--ubsan-vptr',
-                      help='Use undefined-behavior (vptr) sanitizer',
+                      help='build with undefined-behavior (vptr) sanitizer',
                       action='store_true', default=False)
-  parser.add_argument('--shared', help='Use component build',
+  parser.add_argument('--shared', help='shared library build',
                       action='store_true', default=False)
-  parser.add_argument('--sysroot', help='Use bundled sysroot',
+  parser.add_argument('--sysroot', help='use bundled sysroot',
                       action='store_true', default=False)
-  parser.add_argument('--debug', help='Debug mode',
+  parser.add_argument('--debug', help='debug build',
                       action='store_true', default=False)
-  parser.add_argument('--no-cache', help='Do not use code cache',
+  parser.add_argument('--no-cache', help='do not use Node.js code cache',
                       action='store_true', default=False)
   return parser.parse_args(args)
 

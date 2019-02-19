@@ -49,6 +49,10 @@ make node
 JOBS=4 make test
 ```
 
+### Advanced build configurations
+
+For more advanced build options, check out `tools/gn-gen.py --help`.
+
 ## Project priorities
 * Stay as slim as possible. By avoiding to fork files from dependencies, future maintenance becomes less a hassle.
 * Pull necessary sources as dependencies rather than checking in the sources.
