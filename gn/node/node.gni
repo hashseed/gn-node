@@ -61,3 +61,20 @@ template("build_addons") {
            [ rebase_path(target_gen_dir, base) ]
   }
 }
+
+template("sync_files") {
+  copy("$target_name.copy") {
+    sources = invoker.sources
+    outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
+  }
+  action(target_name) {
+    script = "//tools/mirror_removal.py"
+    inputs = [ "//node_files.json" ]
+    outputs = [ "$target_gen_dir/$target_name.stamp" ]
+    args = rebase_path([
+      ".",
+      target_gen_dir,
+    ] + outputs, root_build_dir)
+    public_deps = [":$target_name.copy"]
+  }
+}

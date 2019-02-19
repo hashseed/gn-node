@@ -2,10 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-node_files = exec_script(
-    "//tools/generate_node_files_json.py",
-    rebase_path([ "//" ], root_build_dir),
-    "json")
+node_files = read_file("//node_files.json", "json")
 
 npm_cli = "//node/deps/npm/bin/npm-cli.js"
 

@@ -5,9 +5,8 @@
 import("//node/node_files.gni")
 import("//node/node.gni")
 
-copy("copy_files") {
+sync_files("sync_files") {
   sources = node_files.tools_doc_files
-  outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
 }
 
 copy("copy_addons_md") {
@@ -16,8 +15,11 @@ copy("copy_addons_md") {
 }
 
 call_node("npm_install_dependencies") {
-  deps = [ ":copy_files" ]
-  inputs = [ npm_cli ] + get_target_outputs(":copy_files")
+  deps = [ ":sync_files" ]
+  inputs = [
+    npm_cli,
+    "$target_gen_dir/package.json"
+  ]
   base = target_gen_dir
   args = [
     rebase_path(npm_cli, base),
@@ -28,9 +30,9 @@ call_node("npm_install_dependencies") {
 action("generate_addons") {
   deps = [
     ":npm_install_dependencies",
-    ":copy_files",
+    ":sync_files",
     ":copy_addons_md",
-    "//node/test/addons:copy_files",
+    "//node/test/addons:sync_files",
     "//node:node",
   ]
   script = "//tools/run_executable_in_dir.py"

@@ -5,14 +5,13 @@
 import("//node/node_files.gni")
 import("//node/node.gni")
 
-copy("copy_files") {
+sync_files("sync_files") {
   sources = node_files.test_js_native_api_files
-  outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
 }
 
 build_addons("build") {
   deps = [
-    ":copy_files",
+    ":sync_files",
     "..:copy_node_api_headers",
     "..:copy_test_files",
   ]
