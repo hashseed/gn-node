@@ -44,12 +44,15 @@ if __name__ == '__main__':
   root_dir = sys.argv[1]
   node_dir = os.path.join(root_dir, 'node')
   node_gyp_file = os.path.join(node_dir, 'node.gyp')
+  inspector_gyp_file = os.path.join(node_dir,
+      'src', 'inspector', 'node_inspector.gypi')
   openssl_gyp_file = os.path.join(node_dir,
       'deps', 'openssl', 'config', 'archs',
       'linux-x86_64', 'no-asm', 'openssl.gypi')
   out = {}
   # Load file lists from gyp files.
   node_gyp = LoadPythonDictionary(node_gyp_file)
+  inspector_gyp = LoadPythonDictionary(inspector_gyp_file)
   openssl_gyp = LoadPythonDictionary(openssl_gyp_file)
   # Find JS lib file and single out files from V8.
   library_files = node_gyp['variables']['library_files']
@@ -79,6 +82,10 @@ if __name__ == '__main__':
       t for t in node_gyp['targets']
       if t['target_name'] == 'cctest')
   out['cctest_sources'] = cctest_target['sources']
+
+  # Find inspector sources.
+  inspector_sources = inspector_gyp['sources']
+  out['inspector_sources'] = inspector_sources
 
   # Find OpenSSL sources.
   openssl_sources = openssl_gyp['variables']['openssl_sources']

@@ -28,7 +28,7 @@ vars = {
   'markupsafe_revision': '8f45f5cfa0009d2a70589bcda0349b8cb2b72783',
 
   'node_url': 'https://chromium.googlesource.com/external/github.com/v8/node.git',
-  'node_revision': '4764ce24a290ae2ca7c77db2457852892b6e488c',
+  'node_revision': '84a04ddaffa2b61c6883cee01ea0b196f66ac787',
 
   'trace_common_url': 'https://chromium.googlesource.com/chromium/src/base/trace_event/common.git',
   'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',
@@ -60,6 +60,11 @@ hooks = [
     'name': 'clang',
     'pattern': '.',
     'action': ['python', 'node-ci/tools/clang/scripts/update.py'],
+  },
+  {
+    'name': 'generate_node_filelist',
+    'pattern': 'node-ci/node',
+    'action': ['python', 'node-ci/tools/generate_node_files_json.py'],
   },
   # Pull GN using checked-in hashes.
   {

@@ -5,6 +5,7 @@
 
 import("//v8/gni/v8.gni")
 import("//node/node.gni")
+import("//node/node_files.gni")
 
 inspector_protocol_dir = "../../tools/inspector_protocol"
 
@@ -34,18 +35,7 @@ inspector_protocol_package = "src/node/inspector/protocol"
 inspector_protocol_output = "node/inspector/protocol"
 
 node_dep("inspector") {
-  sources = [
-    "main_thread_interface.cc",
-    "main_thread_interface.h",
-    "node_string.cc",
-    "node_string.h",
-    "tracing_agent.cc",
-    "tracing_agent.h",
-    "worker_agent.cc",
-    "worker_agent.h",
-    "worker_inspector.cc",
-    "worker_inspector.h",
-  ]
+  sources = node_files.inspector_sources
   sources += rebase_path(_protocol_generated,
                          ".",
                          "$target_gen_dir/$inspector_protocol_package/..")
