@@ -53,6 +53,23 @@ JOBS=4 make test
 
 For more advanced build options, check out `tools/gn-gen.py --help`.
 
+### Update dependencies
+
+To update a dependency, e.g. V8 or Node.js, use gclient to update DEPS.
+
+```bash
+gclient setdep --var=v8_revision=<updated-git-hash>
+```
+
+To apply changes, e.g. for local testing, use git:
+
+```bash
+cd v8
+git remote add local-v8 <path-to-v8-checkout>/.git
+git fetch local-v8
+git checkout local-v8/<your-branch>
+```
+
 ## Project priorities
 * Stay as slim as possible. By avoiding to fork files from dependencies, future maintenance becomes less a hassle.
 * Pull necessary sources as dependencies rather than checking in the sources.
@@ -60,7 +77,7 @@ For more advanced build options, check out `tools/gn-gen.py --help`.
 * Simplicity. It should be easy to get up and running.
 
 ## Not yet implemented
-* Support building on Mac and Windows. The current configurations have only been tested for Linux.
+* Support building on Windows. The current configurations have been tested for Linux and Mac.
 * Platform-specific OpenSSL build configurations. The current build only supports the slowest platform-independent configuration.
 
 ## Explicit non-goals
@@ -73,4 +90,5 @@ For more advanced build options, check out `tools/gn-gen.py --help`.
 * Proper dependency management. Upgrading dependencies is just a small change in `DEPS`.
 * No need to port V8 changes to GYP.
 * Availability of sanitizers.
+* Ability to use GN features such as jumbo builds.
 * Toolchain to build is bundled as dependency.
