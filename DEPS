@@ -4,22 +4,22 @@
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'eba04e58d6f0844f41da8c78b8ebf1b603e281e5',
+  'build_revision': 'ebd384ac0066c979fa8fcd69b139e05407618820',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '106e9fce3799633f42b45ca8bbe9e84e1e23560',
+  'buildtools_revision': '3e50219fc4503f461b2176a9976891b28d80f9ab',
 
   'clang_url': 'https://chromium.googlesource.com/chromium/src/tools/clang.git',
-  'clang_revision': '1dc75416344975a4fdcc5f805985bec3d704df7d',
+  'clang_revision': '987f14b1d69362d837743b9807e2b14caf55688f',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '61d0c292535e8e6c1102f198ec1ef47f50075ceb',
+  'depot_tools_revision': '95ea36ed70541b2ad01c33656c9504b7dc6404d0',
 
   'googletest_url': 'https://chromium.googlesource.com/external/github.com/google/googletest.git',
-  'googletest_revision': '5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081',
+  'googletest_revision': '37ae1fc5e6be26f367d76c078beabd7024fed53a',
 
   'icu_url': 'https://chromium.googlesource.com/chromium/deps/icu.git',
-  'icu_revision': '07e7295d964399ee7bee16a3ac7ca5a053b2cf0a',
+  'icu_revision': '960f195aa87acaec46e6104ec93a596da7ae0843',
 
   'jinja2_url': 'https://chromium.googlesource.com/chromium/src/third_party/jinja2.git',
   'jinja2_revision': 'b41863e42637544c2941b574c7877d3e1f663e25',
@@ -28,13 +28,13 @@ vars = {
   'markupsafe_revision': '8f45f5cfa0009d2a70589bcda0349b8cb2b72783',
 
   'node_url': 'https://chromium.googlesource.com/external/github.com/v8/node.git',
-  'node_revision': 'cdb89f8210671b93936b8e96c1c497d4bb69fe45',
+  'node_revision': '7ef2a111be4e64365832e17cb0ecc4cc8860bced',
 
   'trace_common_url': 'https://chromium.googlesource.com/chromium/src/base/trace_event/common.git',
-  'trace_common_revision' : 'e31a1706337ccb9a658b37d29a018c81695c6518',
+  'trace_common_revision' : '936ba8a963284a6b3737cf2f0474a7131073abee',
 
   'v8_url': 'https://chromium.googlesource.com/v8/v8.git',
-  'v8_revision': 'f23712f99af80c7e155a4f1966a78d67d7dd6a8b',
+  'v8_revision': 'a8a45e41213d51590a1b9b0a629afece1751555c',
 }
 
 deps = {
